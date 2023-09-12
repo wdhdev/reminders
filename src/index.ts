@@ -16,7 +16,7 @@ const client = new ExtendedClient({
     presence: {
         activities: [
             {
-                name: "Help » r.help",
+                name: `Help » ${config.main.prefix}help`,
                 type: Discord.ActivityType.Custom
             }
         ],

@@ -15,7 +15,7 @@ const emojis = {
 }
 
 const main = {
-    prefix: "r."
+    prefix: "r!"
 }
 
 export {
