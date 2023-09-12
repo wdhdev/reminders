@@ -1,0 +1,123 @@
+import Command from "../classes/Command";
+import ExtendedClient from "../classes/ExtendedClient";
+import { Message } from "discord.js";
+import Reminder from "../interfaces/Reminder";
+
+import cap from "../util/cap";
+import { emojis as emoji } from "../config";
+import { randomUUID } from "crypto";
+
+const command: Command = {
+    name: "set",
+    description: "Set a reminder.",
+    aliases: ["add"],
+    botPermissions: [],
+    cooldown: 5,
+    enabled: true,
+    async execute(message: Message, args: string[], cmd: Command, client: ExtendedClient, Discord: any) {
+        try {
+            let time: number | string = args[0];
+            const reason = args.slice(1).join(" ");
+
+            if(!time) {
+                const error = new Discord.EmbedBuilder()
+                    .setColor(client.config_embeds.error)
+                    .setDescription(`${emoji.cross} Please provide a time!`)
+
+                message.reply({ embeds: [error] });
+                return;
+            }
+
+            if(!reason) {
+                const error = new Discord.EmbedBuilder()
+                    .setColor(client.config_embeds.error)
+                    .setDescription(`${emoji.cross} Please provide a reason!`)
+
+                message.reply({ embeds: [error] });
+                return;
+            }
+
+            const timeValue = time.slice(0, -1) as unknown as number;
+            const timeUnit = time.slice(-1);
+    
+            // Error checking
+            if(isNaN(timeValue) || timeValue <= 0) {
+                const error = new Discord.EmbedBuilder()
+                    .setColor(client.config_embeds.error)
+                    .setDescription(`${emoji.cross} Invalid time unit. Use \`s\` for seconds, \`m\` for minutes, \`h\` for hours, or \`d\` for days.`)
+
+                message.reply({ embeds: [error] });
+                return;
+            }
+    
+            // Convert time to milliseconds
+            switch (timeUnit) {
+                case "s": // seconds
+                    time = timeValue * 1000;
+                    break;
+                case "m": // minutes
+                    time = timeValue * 60 * 1000;
+                    break;
+                case "h": // hours
+                    time = timeValue * 60 * 60 * 1000;
+                    break;
+                case "d": // days
+                    time = timeValue * 24 * 60 * 60 * 1000;
+                    break;
+                default:
+                    const error = new Discord.EmbedBuilder()
+                        .setColor(client.config_embeds.error)
+                        .setDescription(`${emoji.cross} Invalid time unit. Use \`s\` for seconds, \`m\` for minutes, \`h\` for hours, or \`d\` for days.`)
+
+                    message.reply({ embeds: [error] });
+                    return;
+            }
+
+            if(time > 2**31 - 1) {
+                const error = new Discord.EmbedBuilder()
+                    .setColor(client.config_embeds.error)
+                    .setDescription(`${emoji.cross} Please provide a valid time!`)
+
+                message.reply({ embeds: [error] });
+                return;
+            }
+
+            const id = randomUUID().slice(0, 8);
+
+            const reminder: Reminder = {
+                id: id,
+                user: message.author.id,
+                set: Date.now(),
+                timestamp: time,
+                reason: reason
+            }
+
+            reminder.handler = setTimeout(() => {
+                const embed = new Discord.EmbedBuilder()
+                    .setColor(client.config_embeds.default)
+                    .setTitle("🔔 Reminder")
+                    .setDescription(cap(reason, 2000))
+                    .setFooter({ text: id })
+                    .setTimestamp(reminder.set)
+
+                message.author.send({ embeds: [embed] }).catch(() => {
+                    message.channel.send({ content: `${message.author}`, embeds: [embed] }).catch(() => {});
+                })
+
+                client.reminders = client.reminders.filter((r) => r.id !== reminder.id);
+            }, time)
+
+            client.reminders.push(reminder);
+
+            const reminderSet = new Discord.EmbedBuilder()
+                .setColor(client.config_embeds.default)
+                .setDescription(`${emoji.tick} Your reminder has been set for <t:${(reminder.set + reminder.timestamp).toString().slice(0, -3)}:f> with the ID \`${id}\`.`)
+
+            message.reply({ embeds: [reminderSet] });
+        } catch(err) {
+            client.logCommandError(err, message, Discord);
+        }
+    }
+}
+
+export = command;
