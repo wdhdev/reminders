@@ -13,34 +13,21 @@ const command: Command = {
     enabled: true,
     async execute(message: Message, args: string[], cmd: Command, client: ExtendedClient & any, Discord: any) {
         try {
-            const botLatency = Date.now() - message.createdTimestamp;
-            const apiLatency = Math.round(client.ws.ping);
+            const latency = Date.now() - message.createdTimestamp;
 
-            let botLatencyValue;
-            let apiLatencyValue;
+            let latencyValue;
 
-            if(botLatency >= 0 && botLatency <= 99) {
-                botLatencyValue = `${emoji.connection_excellent} ${botLatency}ms`;
-            } else if(botLatency >= 100 && botLatency <= 199) {
-                botLatencyValue = `${emoji.connection_good} ${botLatency}ms`;
+            if(latency >= 0 && latency <= 99) {
+                latencyValue = `${emoji.connection_excellent} ${latency}ms`;
+            } else if(latency >= 100 && latency <= 199) {
+                latencyValue = `${emoji.connection_good} ${latency}ms`;
             } else {
-                botLatencyValue = `${emoji.connection_bad} ${botLatency}ms`;
-            }
-
-            if(apiLatency >= 0 && apiLatency <= 99) {
-                apiLatencyValue = `${emoji.connection_excellent} ${apiLatency}ms`;
-            } else if(apiLatency >= 100 && apiLatency <= 199) {
-                apiLatencyValue = `${emoji.connection_good} ${apiLatency}ms`;
-            } else {
-                apiLatencyValue = `${emoji.connection_bad} ${apiLatency}ms`;
+                latencyValue = `${emoji.connection_bad} ${latency}ms`;
             }
 
             const ping = new Discord.EmbedBuilder()
                 .setColor(client.config_embeds.default)
-                .addFields (
-                    { name: "Bot Latency", value: botLatencyValue, inline: true },
-                    { name: "API Latency", value: apiLatencyValue, inline: true }
-                )
+                .setDescription(latencyValue)
 
             message.reply({ embeds: [ping] });
         } catch(err) {
