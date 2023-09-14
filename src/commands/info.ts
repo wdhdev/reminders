@@ -3,7 +3,8 @@ import ExtendedClient from "../classes/ExtendedClient";
 import { Message } from "discord.js";
 
 import { emojis as emoji } from "../config";
-import cap from "../util/cap";
+
+import Reminder from "../models/Reminder";
 
 const command: Command = {
     name: "info",
@@ -25,7 +26,7 @@ const command: Command = {
                 return;
             }
 
-            const reminder = client.reminders.find(r => r.user === message.author.id && r.id === id);
+            const reminder = await Reminder.findOne({ id: id, user: message.author.id });
 
             if(!reminder) {
                 const error = new Discord.EmbedBuilder()
@@ -39,10 +40,10 @@ const command: Command = {
             const info = new Discord.EmbedBuilder()
                 .setColor(client.config_embeds.default)
                 .setTitle(`🔔 ${id}`)
-                .setDescription(cap(reminder.reason, 2000))
+                .setDescription(reminder.reason)
                 .addFields(
                     { name: "Set", value: `<t:${reminder.set.toString().slice(0, -3)}:f>`, inline: true },
-                    { name: "Goes off", value: `<t:${(reminder.set + reminder.timestamp).toString().slice(0, -3)}:R>`, inline: true }
+                    { name: "Due", value: `<t:${reminder.due.toString().slice(0, -3)}:R>`, inline: true }
                 )
 
             message.reply({ embeds: [info] });

@@ -17,7 +17,31 @@ const event: Event = {
 
             if(message.author.bot || !message.guild) return;
             if(!message.guild.members.me.permissions.has(requiredPerms)) return;
-            if(!message.content.startsWith(main.prefix)) return;
+
+            if(message.content.startsWith(`<@!${client.user.id}>`) || message.content.startsWith(`<@${client.user.id}>`)) {
+                const mention = new Discord.EmbedBuilder()
+                    .setColor(client.config_embeds.default)
+                    .setDescription(`👋 Hello there **${message.author.globalName || message.author.username}**,\n\n😊 My name is **${client.user.username}** and I am a reminder bot.\n🕰️ I can remind you of things you need to do, or just send you a message at a certain time!\n\n✨ To get started with me, you can use the command \`${main.prefix}help\`.`)
+                    .setTimestamp()
+
+                const buttons = new Discord.ActionRowBuilder()
+                    .addComponents (
+                        new Discord.ButtonBuilder()
+                            .setStyle(Discord.ButtonStyle.Link)
+                            .setLabel("Invite")
+                            .setURL(`https://wdh.gg/reminders`),
+
+                        new Discord.ButtonBuilder()
+                            .setStyle(Discord.ButtonStyle.Link)
+                            .setLabel("GitHub")
+                            .setURL(`https://wdh.gg/reminders-github`)
+                    )
+
+                message.reply({ embeds: [mention], components: [buttons] });
+                return;
+            }
+
+            if(!message.content.toLowerCase().startsWith(main.prefix.toLowerCase())) return;
 
             const args = message.content.slice(main.prefix.length).split(/ +/);
 

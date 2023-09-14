@@ -1,7 +1,6 @@
 import { Client, Collection } from "discord.js";
 import { embeds, main } from "../config";
 import * as Sentry from "@sentry/node";
-import Reminder from "../interfaces/Reminder";
 
 export default class ExtendedClient extends Client {
     public commands: Collection<string, any>;
@@ -10,7 +9,7 @@ export default class ExtendedClient extends Client {
     public events: Collection<string, any>;
     public logCommandError: Function;
     public logError: Function;
-    public reminders: Reminder[];
+    public reminders: Map<string, NodeJS.Timeout>;
     public sentry: typeof Sentry;
     public validPermissions: string[];
 }

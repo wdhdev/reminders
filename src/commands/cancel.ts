@@ -4,10 +4,12 @@ import { Message } from "discord.js";
 
 import { emojis as emoji } from "../config";
 
+import Reminder from "../models/Reminder";
+
 const command: Command = {
     name: "cancel",
     description: "Cancel a reminder.",
-    aliases: ["delete"],
+    aliases: ["c", "clear", "delete"],
     botPermissions: [],
     cooldown: 5,
     enabled: true,
@@ -24,7 +26,7 @@ const command: Command = {
                 return;
             }
 
-            const reminder = client.reminders.find(r => r.user === message.author.id && r.id === id);
+            const reminder = await Reminder.findOne({ id: id, user: message.author.id });
 
             if(!reminder) {
                 const error = new Discord.EmbedBuilder()
@@ -35,8 +37,11 @@ const command: Command = {
                 return;
             }
 
-            clearTimeout(reminder.handler);
-            client.reminders = client.reminders.filter(r => r !== reminder);
+            const timeoutId = `${message.author.id}-${id}`;
+
+            clearTimeout(client.reminders.get(timeoutId));
+            client.reminders.delete(timeoutId);
+            await reminder.delete();
 
             const cancelled = new Discord.EmbedBuilder()
                 .setColor(client.config_embeds.default)

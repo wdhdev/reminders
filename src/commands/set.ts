@@ -1,16 +1,16 @@
 import Command from "../classes/Command";
 import ExtendedClient from "../classes/ExtendedClient";
 import { Message } from "discord.js";
-import Reminder from "../interfaces/Reminder";
 
-import cap from "../util/cap";
 import { emojis as emoji } from "../config";
 import { randomUUID } from "crypto";
+
+import Reminder from "../models/Reminder";
 
 const command: Command = {
     name: "set",
     description: "Set a reminder.",
-    aliases: ["add"],
+    aliases: ["remind", "remindme"],
     botPermissions: [],
     cooldown: 5,
     enabled: true,
@@ -37,8 +37,17 @@ const command: Command = {
                 return;
             }
 
+            if(reason.length > 250) {
+                const error = new Discord.EmbedBuilder()
+                    .setColor(client.config_embeds.error)
+                    .setDescription(`${emoji.cross} Your reason cannot be more than 250 characters!`)
+
+                message.reply({ embeds: [error] });
+                return;
+            }
+
             const timeValue = time.slice(0, -1) as unknown as number;
-            const timeUnit = time.slice(-1);
+            const timeUnit = time.toLowerCase().slice(-1);
     
             // Error checking
             if(isNaN(timeValue) || timeValue <= 0) {
@@ -67,7 +76,7 @@ const command: Command = {
                 default:
                     const error = new Discord.EmbedBuilder()
                         .setColor(client.config_embeds.error)
-                        .setDescription(`${emoji.cross} Invalid time unit. Use \`s\` for seconds, \`m\` for minutes, \`h\` for hours, or \`d\` for days.`)
+                        .setDescription(`${emoji.cross} Invalid time unit specified. Use \`s\` for seconds, \`m\` for minutes, \`h\` for hours, or \`d\` for days.`)
 
                     message.reply({ embeds: [error] });
                     return;
@@ -76,7 +85,18 @@ const command: Command = {
             if(time > 2**31 - 1) {
                 const error = new Discord.EmbedBuilder()
                     .setColor(client.config_embeds.error)
-                    .setDescription(`${emoji.cross} Please provide a valid time!`)
+                    .setDescription(`${emoji.cross} Please provide a valid time! (Cannot be more than 24 days)`)
+
+                message.reply({ embeds: [error] });
+                return;
+            }
+
+            const reminders = await Reminder.find({ user: message.author.id });
+
+            if(reminders.length >= 10) {
+                const error = new Discord.EmbedBuilder()
+                    .setColor(client.config_embeds.error)
+                    .setDescription(`${emoji.cross} You cannot have more than 10 reminders running at once!`)
 
                 message.reply({ embeds: [error] });
                 return;
@@ -84,34 +104,33 @@ const command: Command = {
 
             const id = randomUUID().slice(0, 8);
 
-            const reminder: Reminder = {
+            const reminder = await new Reminder({
                 id: id,
                 user: message.author.id,
+                channel: message.channel.id,
                 set: Date.now(),
-                timestamp: time,
+                due: Date.now() + time,
+                delay: time,
                 reason: reason
-            }
+            }).save()
 
-            reminder.handler = setTimeout(() => {
+            client.reminders.set(`${message.author.id}-${id}`, setTimeout(async () => {
                 const embed = new Discord.EmbedBuilder()
                     .setColor(client.config_embeds.default)
                     .setTitle("🔔 Reminder")
-                    .setDescription(cap(reason, 2000))
-                    .setFooter({ text: id })
-                    .setTimestamp(reminder.set)
+                    .setDescription(reason)
 
                 message.author.send({ embeds: [embed] }).catch(() => {
                     message.channel.send({ content: `${message.author}`, embeds: [embed] }).catch(() => {});
                 })
 
-                client.reminders = client.reminders.filter((r) => r.id !== reminder.id);
-            }, time)
-
-            client.reminders.push(reminder);
+                client.reminders.delete(`${message.author.id}-${id}`);
+                await Reminder.findOneAndDelete({ id: id, user: message.author.id });
+            }, time))
 
             const reminderSet = new Discord.EmbedBuilder()
                 .setColor(client.config_embeds.default)
-                .setDescription(`${emoji.tick} Your reminder has been set for <t:${(reminder.set + reminder.timestamp).toString().slice(0, -3)}:f> with the ID \`${id}\`.`)
+                .setDescription(`${emoji.tick} Your reminder has been set for <t:${reminder.due.toString().slice(0, -3)}:f> with the ID \`${id}\`.`)
 
             message.reply({ embeds: [reminderSet] });
         } catch(err) {

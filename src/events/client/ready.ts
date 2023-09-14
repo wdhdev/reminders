@@ -1,6 +1,10 @@
 import Event from "../../classes/Event";
 import ExtendedClient from "../../classes/ExtendedClient";
 
+import Discord from "discord.js";
+
+import Reminder from "../../models/Reminder";
+
 const event: Event = {
     name: "ready",
     once: true,
@@ -8,6 +12,53 @@ const event: Event = {
         try {
             // Login Message
             console.log(`Logged in as: ${client.user.tag.endsWith("#0") ? client.user.username : client.user.tag}`);
+
+            // Manage timeouts
+            let reminders = await Reminder.find({});
+
+            const dueReminders = reminders.filter(reminder => reminder.due <= Date.now().toString());
+
+            for(const reminder of dueReminders) {
+                const user = client.users.cache.get(reminder.user);
+
+                const embed = new Discord.EmbedBuilder()
+                    .setColor(client.config_embeds.default)
+                    .setTitle("🔔 Reminder")
+                    .setDescription(reminder.reason)
+
+                user.send({ embeds: [embed] }).catch(() => {
+                    const channel = client.channels.cache.get(reminder.channel) as Discord.TextChannel;
+
+                    channel.send({ content: `<@${reminder.user}>`, embeds: [embed] }).catch(() => {});
+                })
+
+                await reminder.delete();
+                reminders = reminders.filter(r => r !== reminder);
+            }
+
+            for(const reminder of reminders) {
+                const delay = Number(reminder.due) - Date.now();
+
+                const timeout = setTimeout(async () => {
+                    const user = client.users.cache.get(reminder.user);
+
+                    const embed = new Discord.EmbedBuilder()
+                        .setColor(client.config_embeds.default)
+                        .setTitle("🔔 Reminder")
+                        .setDescription(reminder.reason)
+
+                    user.send({ embeds: [embed] }).catch(() => {
+                        const channel = client.channels.cache.get(reminder.channel) as Discord.TextChannel;
+
+                        channel.send({ content: `<@${reminder.user}>`, embeds: [embed] }).catch(() => {});
+                    })
+
+                    await reminder.delete();
+                    client.reminders.delete(`${reminder.user}-${reminder.id}`);
+                }, delay);
+
+                client.reminders.set(`${reminder.user}-${reminder.id}`, timeout);
+            }
         } catch(err) {
             client.logError(err);
         }

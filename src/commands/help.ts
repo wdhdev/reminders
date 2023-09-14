@@ -51,7 +51,6 @@ const command: Command = {
                 .setDescription(cmds.sort().join("\n"))
                 .setTimestamp()
 
-
             const command: Command = client.commands.get(cmdArg) || client.commands.find(c => c.aliases && c.aliases.includes(cmdArg));
 
             if(command && command.enabled) {

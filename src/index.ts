@@ -27,6 +27,10 @@ const client = new ExtendedClient({
 // Error Handling
 process.on("unhandledRejection", (err: Error) => Sentry.captureException(err));
 
+// Connect to Database
+import database from "./util/database";
+database();
+
 // Configs
 client.config_embeds = config.embeds;
 client.config_main = config.main;
@@ -42,7 +46,7 @@ loadHandlers(client);
 client.login(process.env.token);
 
 // Constants
-client.reminders = [];
+client.reminders = new Map();
 client.sentry = Sentry;
 
 client.validPermissions = [
