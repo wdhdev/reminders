@@ -3,7 +3,7 @@ import ExtendedClient from "../classes/ExtendedClient";
 import fs from "fs";
 import { getDirs } from "../util/functions";
 
-export = async (client: ExtendedClient, Discord: any) => {
+export = async (client: ExtendedClient, Discord: typeof import("discord.js")) => {
     async function loadDir(dir: String) {
         const files = fs.readdirSync(`./dist/events/${dir}`).filter((file: String) => file.endsWith(".js"));
 

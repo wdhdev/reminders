@@ -11,7 +11,7 @@ const command: Command = {
     botPermissions: [],
     cooldown: 5,
     enabled: true,
-    async execute(message: Message, args: string[], cmd: Command, client: ExtendedClient & any, Discord: any) {
+    async execute(message: Message, args: string[], cmd: Command, client: ExtendedClient & any, Discord: typeof import("discord.js")) {
         try {
             const botLatency = Date.now() - message.createdTimestamp;
             const apiLatency = Math.round(client.ws.ping);

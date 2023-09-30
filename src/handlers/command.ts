@@ -18,7 +18,7 @@ export = async (client: ExtendedClient) => {
 
     await load();
 
-    client.logCommandError = async function (err: Error, message: Message, Discord: any) {
+    client.logCommandError = async function (err: Error, message: Message, Discord: typeof import("discord.js")) {
         const id = client.sentry.captureException(err);
         console.error(err);
 

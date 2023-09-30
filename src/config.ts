@@ -15,7 +15,8 @@ const emojis = {
 }
 
 const main = {
-    prefix: "r!"
+    prefix: "r!",
+    owner: "853158265466257448"
 }
 
 export {

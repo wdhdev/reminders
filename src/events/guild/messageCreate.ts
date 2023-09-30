@@ -11,7 +11,7 @@ const cooldowns = new Map();
 const event: Event = {
     name: "messageCreate",
     once: false,
-    async execute(client: ExtendedClient, Discord: any, message: Message) {
+    async execute(client: ExtendedClient, Discord: typeof import("discord.js"), message: Message) {
         try {
             const requiredPerms: PermissionResolvable = ["SendMessages", "EmbedLinks"];
 
@@ -24,7 +24,7 @@ const event: Event = {
                     .setDescription(`👋 Hello there **${message.author.globalName || message.author.username}**,\n\n😊 My name is **${client.user.username}** and I am a reminder bot.\n🕰️ I can remind you of things you need to do, or just send you a message at a certain time!\n\n✨ To get started with me, you can use the command \`${main.prefix}help\`.`)
                     .setTimestamp()
 
-                const buttons = new Discord.ActionRowBuilder()
+                const buttons: any = new Discord.ActionRowBuilder()
                     .addComponents (
                         new Discord.ButtonBuilder()
                             .setStyle(Discord.ButtonStyle.Link)
@@ -78,6 +78,22 @@ const event: Event = {
                     message.reply({ embeds: [permError] });
                     return;
                 }
+            }
+
+            if(message.author.id === main.owner) {
+                try {
+                    await command.execute(message, args, cmd, client, Discord);
+                } catch(err) {
+                    client.logError(err);
+
+                    const error = new Discord.EmbedBuilder()
+                        .setColor(client.config_embeds.error)
+                        .setDescription(`${emoji.cross} There was an error while executing that command!`)
+
+                    message.reply({ embeds: [error] });
+                }
+
+                return;
             }
 
             if(!cooldowns.has(command.name)) cooldowns.set(command.name, new Discord.Collection());

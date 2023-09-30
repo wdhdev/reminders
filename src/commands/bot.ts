@@ -11,7 +11,7 @@ const command: Command = {
     botPermissions: [],
     cooldown: 5,
     enabled: true,
-    async execute(message: Message, args: string[], cmd: Command, client: ExtendedClient, Discord: any) {
+    async execute(message: Message, args: string[], cmd: Command, client: ExtendedClient, Discord: typeof import("discord.js")) {
         try {
             const info = new Discord.EmbedBuilder()
                 .setColor(client.config_embeds.default)

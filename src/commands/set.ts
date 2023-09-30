@@ -14,7 +14,7 @@ const command: Command = {
     botPermissions: [],
     cooldown: 5,
     enabled: true,
-    async execute(message: Message, args: string[], cmd: Command, client: ExtendedClient, Discord: any) {
+    async execute(message: Message, args: string[], cmd: Command, client: ExtendedClient, Discord: typeof import("discord.js")) {
         try {
             let time: number | string = args[0];
             const reason = args.slice(1).join(" ");
@@ -119,6 +119,11 @@ const command: Command = {
                     .setColor(client.config_embeds.default)
                     .setTitle("🔔 Reminder")
                     .setDescription(reason)
+                    .addFields (
+                        { name: "Set", value: `<t:${reminder.set.toString().slice(0, -3)}:f> (<t:${reminder.set.toString().slice(0, -3)}:R>)` }
+                    )
+                    .setFooter({ text: `ID: ${reminder.id}` })
+                    .setTimestamp()
 
                 message.author.send({ embeds: [embed] }).catch(() => {
                     message.channel.send({ content: `${message.author}`, embeds: [embed] }).catch(() => {});
