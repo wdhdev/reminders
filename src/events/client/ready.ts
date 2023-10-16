@@ -33,12 +33,14 @@ const event: Event = {
                     .setTimestamp()
 
                 try {
-                    user.send({ embeds: [embed] }).catch(() => {
+                    user.send({ embeds: [embed] });
+                } catch {
+                    try {
                         const channel = client.channels.cache.get(reminder.channel) as Discord.TextChannel;
 
                         channel.send({ content: `<@${reminder.user}>`, embeds: [embed] });
-                    })
-                } catch {}
+                    } catch {}
+                }
 
                 await reminder.delete();
                 reminders = reminders.filter(r => r !== reminder);
@@ -61,12 +63,14 @@ const event: Event = {
                         .setTimestamp()
 
                     try {
-                        user.send({ embeds: [embed] }).catch(() => {
+                        user.send({ embeds: [embed] });
+                    } catch {
+                        try {
                             const channel = client.channels.cache.get(reminder.channel) as Discord.TextChannel;
 
                             channel.send({ content: `<@${reminder.user}>`, embeds: [embed] });
-                        })
-                    } catch {}
+                        } catch {}
+                    }
 
                     await reminder.delete();
                     client.reminders.delete(`${reminder.user}-${reminder.id}`);

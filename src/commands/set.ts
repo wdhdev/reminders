@@ -125,9 +125,13 @@ const command: Command = {
                     .setFooter({ text: `ID: ${reminder.id}` })
                     .setTimestamp()
 
-                message.author.send({ embeds: [embed] }).catch(() => {
-                    message.channel.send({ content: `${message.author}`, embeds: [embed] }).catch(() => {});
-                })
+                try {
+                    message.author.send({ embeds: [embed] });
+                } catch {
+                    try {
+                        message.channel.send({ content: `${message.author}`, embeds: [embed] });
+                    } catch {}
+                }
 
                 client.reminders.delete(`${message.author.id}-${id}`);
                 await Reminder.findOneAndDelete({ id: id, user: message.author.id });
