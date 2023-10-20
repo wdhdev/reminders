@@ -10,7 +10,7 @@
   "author": "William Harrison",
   "license": "MIT",
   "dependencies": {
-    "@sentry/node": "^7.72.0",
+    "@sentry/node": "^7.74.1",
     "discord.js": "^14.13.0",
     "dotenv": "^16.3.1",
     "mongoose": "^6.12.0"
