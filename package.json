@@ -7,8 +7,16 @@
     "build": "npx tsc",
     "start": "npm run build && node dist/index.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wdhdev/reminders.git"
+  },
   "author": "William Harrison",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wdhdev/reminders/issues"
+  },
+  "homepage": "https://github.com/wdhdev/reminders#readme",
   "dependencies": {
     "@sentry/node": "^7.74.1",
     "discord.js": "^14.13.0",
