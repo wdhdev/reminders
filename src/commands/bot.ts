@@ -22,8 +22,29 @@ const command: Command = {
                     { name: "🟢 Online Since", value: `<t:${(Date.now() - client.uptime).toString().slice(0, -3)}:f>`, inline: true },
                     { name: "📊 Statistics", value: `Guilds: \`${client.guilds.cache.size}\`\nUsers: \`${client.users.cache.size}\`` }
                 )
+    
+            const buttons: any = new Discord.ActionRowBuilder()
+                .addComponents (
+                    new Discord.ButtonBuilder()
+                        .setStyle(Discord.ButtonStyle.Link)
+                        .setEmoji("🔗")
+                        .setLabel("Invite")
+                        .setURL(`https://wdh.gg/reminders`),
 
-            message.reply({ embeds: [info] });
+                    new Discord.ButtonBuilder()
+                        .setStyle(Discord.ButtonStyle.Link)
+                        .setEmoji("🗳️")
+                        .setLabel("Vote")
+                        .setURL(`https://wdh.gg/reminders-vote`),
+
+                    new Discord.ButtonBuilder()
+                        .setStyle(Discord.ButtonStyle.Link)
+                        .setEmoji("🐙")
+                        .setLabel("GitHub")
+                        .setURL(`https://wdh.gg/reminders-github`)
+                )
+
+            message.reply({ embeds: [info], components: [buttons] });
         } catch(err) {
             client.logCommandError(err, message, Discord);
         }

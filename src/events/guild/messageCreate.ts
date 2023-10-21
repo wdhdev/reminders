@@ -28,11 +28,19 @@ const event: Event = {
                     .addComponents (
                         new Discord.ButtonBuilder()
                             .setStyle(Discord.ButtonStyle.Link)
+                            .setEmoji("🔗")
                             .setLabel("Invite")
                             .setURL(`https://wdh.gg/reminders`),
 
                         new Discord.ButtonBuilder()
                             .setStyle(Discord.ButtonStyle.Link)
+                            .setEmoji("🗳️")
+                            .setLabel("Vote")
+                            .setURL(`https://wdh.gg/reminders-vote`),
+
+                        new Discord.ButtonBuilder()
+                            .setStyle(Discord.ButtonStyle.Link)
+                            .setEmoji("🐙")
                             .setLabel("GitHub")
                             .setURL(`https://wdh.gg/reminders-github`)
                     )
