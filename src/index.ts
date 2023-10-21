@@ -16,7 +16,7 @@ const client = new ExtendedClient({
     presence: {
         activities: [
             {
-                name: `Help » ${config.main.prefix}help`,
+                name: `🔔 » @Reminders`,
                 type: Discord.ActivityType.Custom
             }
         ],
