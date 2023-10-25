@@ -36,7 +36,7 @@ const command: Command = {
                     .setColor(client.config_embeds.default)
                     .setAuthor({ name: user.tag.endsWith("#0") ? user.username : user.tag, iconURL: user.displayAvatarURL({ extension: "png", forceStatic: false }), url: `https://discord.com/users/${user.id}` })
                     .setTitle(`${user.globalName || user.username}'s Reminders`)
-                    .setDescription(cap(reminders.map(r => `\`${r.id}\` (<t:${r.due.toString().slice(0, -3)}:R>):\n*${cap(r.reason, 50)}*`).join("\n"), 2000))
+                    .setDescription(cap(reminders.map(r => `\`${r.id}\` (<t:${r.due.toString().slice(0, -3)}:R>):\n*${cap(r.reason, 100)}*`).join("\n"), 4000))
 
                 message.reply({ embeds: [list] });
                 return;
@@ -56,7 +56,7 @@ const command: Command = {
             const list = new Discord.EmbedBuilder()
                 .setColor(client.config_embeds.default)
                 .setTitle("Your Reminders")
-                .setDescription(cap(reminders.map(r => `\`${r.id}\` (<t:${r.due.toString().slice(0, -3)}:R>):\n*${cap(r.reason, 50)}*`).join("\n"), 2000))
+                .setDescription(cap(reminders.map(r => `\`${r.id}\` (<t:${r.due.toString().slice(0, -3)}:R>):\n*${cap(r.reason, 100)}*`).join("\n"), 4000))
                 .setFooter({ text: `Use "${main.prefix}info <id>" for more information.` })
 
             message.reply({ embeds: [list] });

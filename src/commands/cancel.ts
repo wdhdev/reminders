@@ -39,8 +39,10 @@ const command: Command = {
 
             const timeoutId = `${message.author.id}-${id}`;
 
+            // Clear reminder
             clearTimeout(client.reminders.get(timeoutId));
             client.reminders.delete(timeoutId);
+
             await reminder.delete();
 
             const cancelled = new Discord.EmbedBuilder()
