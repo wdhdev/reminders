@@ -23,7 +23,7 @@ const event: Event = {
 
                 const embed = new Discord.EmbedBuilder()
                     .setColor(client.config_embeds.default)
-                    .setTitle("🔔 Overdue Reminder")
+                    .setTitle("Overdue Reminder")
                     .setDescription(reminder.reason)
                     .addFields (
                         { name: "Set", value: `<t:${reminder.set.toString().slice(0, -3)}:f>`, inline: true },
@@ -33,12 +33,14 @@ const event: Event = {
                     .setTimestamp()
 
                 try {
-                    user.send({ embeds: [embed] });
+                    await user.send({ embeds: [embed] });
                 } catch {
                     try {
                         const channel = client.channels.cache.get(reminder.channel) as Discord.TextChannel;
 
-                        channel.send({ content: `<@${reminder.user}>`, embeds: [embed] });
+                        if(!channel) return;
+
+                        await channel.send({ content: `<@${reminder.user}>`, embeds: [embed] });
                     } catch {}
                 }
 
@@ -54,7 +56,7 @@ const event: Event = {
 
                     const embed = new Discord.EmbedBuilder()
                         .setColor(client.config_embeds.default)
-                        .setTitle("🔔 Reminder")
+                        .setTitle("Reminder")
                         .setDescription(reminder.reason)
                         .addFields (
                             { name: "Set", value: `<t:${reminder.set.toString().slice(0, -3)}:f>` }
@@ -63,12 +65,14 @@ const event: Event = {
                         .setTimestamp()
 
                     try {
-                        user.send({ embeds: [embed] });
+                        await user.send({ embeds: [embed] });
                     } catch {
                         try {
                             const channel = client.channels.cache.get(reminder.channel) as Discord.TextChannel;
 
-                            channel.send({ content: `<@${reminder.user}>`, embeds: [embed] });
+                            if(!channel) return;
+
+                            await channel.send({ content: `<@${reminder.user}>`, embeds: [embed] });
                         } catch {}
                     }
 

@@ -1,6 +1,6 @@
 import Command from "../classes/Command";
 import ExtendedClient from "../classes/ExtendedClient";
-import { Message } from "discord.js";
+import { Message, TextChannel } from "discord.js";
 
 import { emojis as emoji } from "../config";
 import { randomUUID } from "crypto";
@@ -18,6 +18,7 @@ const command: Command = {
         try {
             let time: number | string = args[0];
             const reason = args.slice(1).join(" ");
+            const flagI = args.includes("-i");
 
             if(!time) {
                 const error = new Discord.EmbedBuilder()
@@ -37,10 +38,10 @@ const command: Command = {
                 return;
             }
 
-            if(reason.length > 250) {
+            if(reason.length > 1000) {
                 const error = new Discord.EmbedBuilder()
                     .setColor(client.config_embeds.error)
-                    .setDescription(`${emoji.cross} Your reason cannot be more than 250 characters!`)
+                    .setDescription(`${emoji.cross} Your reason cannot be more than 1000 characters!`)
 
                 message.reply({ embeds: [error] });
                 return;
@@ -76,7 +77,7 @@ const command: Command = {
                 default:
                     const error = new Discord.EmbedBuilder()
                         .setColor(client.config_embeds.error)
-                        .setDescription(`${emoji.cross} Invalid time unit specified. Use \`s\` for seconds, \`m\` for minutes, \`h\` for hours, or \`d\` for days.`)
+                        .setDescription(`${emoji.cross} Invalid time unit. Use \`s\` for seconds, \`m\` for minutes, \`h\` for hours, or \`d\` for days.`)
 
                     message.reply({ embeds: [error] });
                     return;
@@ -86,17 +87,6 @@ const command: Command = {
                 const error = new Discord.EmbedBuilder()
                     .setColor(client.config_embeds.error)
                     .setDescription(`${emoji.cross} Please provide a valid time! (Cannot be more than 24 days)`)
-
-                message.reply({ embeds: [error] });
-                return;
-            }
-
-            const reminders = await Reminder.find({ user: message.author.id });
-
-            if(reminders.length >= 10) {
-                const error = new Discord.EmbedBuilder()
-                    .setColor(client.config_embeds.error)
-                    .setDescription(`${emoji.cross} You cannot have more than 10 reminders running at once!`)
 
                 message.reply({ embeds: [error] });
                 return;
@@ -117,7 +107,7 @@ const command: Command = {
             client.reminders.set(`${message.author.id}-${id}`, setTimeout(async () => {
                 const embed = new Discord.EmbedBuilder()
                     .setColor(client.config_embeds.default)
-                    .setTitle("🔔 Reminder")
+                    .setTitle("Reminder")
                     .setDescription(reason)
                     .addFields (
                         { name: "Set", value: `<t:${reminder.set.toString().slice(0, -3)}:f> (<t:${reminder.set.toString().slice(0, -3)}:R>)` }
@@ -126,10 +116,14 @@ const command: Command = {
                     .setTimestamp()
 
                 try {
-                    message.author.send({ embeds: [embed] });
+                    await message.author.send({ embeds: [embed] });
                 } catch {
                     try {
-                        message.channel.send({ content: `${message.author}`, embeds: [embed] });
+                        const channel = client.channels.cache.get(message.channel.id) as TextChannel;
+
+                        if(!channel) return;
+
+                        await channel.send({ content: `${message.author}`, embeds: [embed] });
                     } catch {}
                 }
 
@@ -139,7 +133,9 @@ const command: Command = {
 
             const reminderSet = new Discord.EmbedBuilder()
                 .setColor(client.config_embeds.default)
-                .setDescription(`${emoji.tick} Your reminder has been set for <t:${reminder.due.toString().slice(0, -3)}:f> with the ID \`${id}\`.`)
+                .setDescription(`${emoji.tick} Your reminder has been set for <t:${reminder.due.toString().slice(0, -3)}:f>${flagI ? ` with the ID \`${reminder.id}\`` : ""}!`)
+
+            if(!flagI) reminderSet.setFooter({ text: "Use the -i flag to get the ID with the response." });
 
             message.reply({ embeds: [reminderSet] });
         } catch(err) {
