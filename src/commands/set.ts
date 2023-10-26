@@ -16,11 +16,12 @@ const command: Command = {
     enabled: true,
     async execute(message: Message, args: string[], cmd: Command, client: ExtendedClient, Discord: typeof import("discord.js")) {
         try {
-            let time: number | string = args[0];
-            const reason = args.slice(1).join(" ");
-            const flagI = args.includes("-i");
+            // Remove flag from args
+            const newArgs = args.filter(a => a !== "-i");
 
-            args = args.filter(a => a !== "-i");
+            let time: number | string = newArgs[0];
+            const reason = newArgs.slice(1).join(" ");
+            const flagI = args.includes("-i");
 
             if(!time) {
                 const error = new Discord.EmbedBuilder()

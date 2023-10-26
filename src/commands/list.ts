@@ -16,13 +16,14 @@ const command: Command = {
     enabled: true,
     async execute(message: Message, args: string[], cmd: Command, client: ExtendedClient, Discord: typeof import("discord.js")) {
         try {
+            // Remove flag from args
+            const newArgs = args.filter(a => a !== "-f");
+
             // If user is an admin, get reminders for a specific user
-            const user = message.mentions.users.first() || client.users.cache.get(args[0]?.match(/[0-9]{17,19}/)?.[0]) || message.author;
+            const user = message.mentions.users.first() || client.users.cache.get(newArgs[0]?.match(/[0-9]{17,19}/)?.[0]) || message.author;
 
             // Check for full list flag -f
             const flagF = args.includes("-f");
-
-            args = args.filter(a => a !== "-f");
 
             if(user.id !== message.author.id && main.owner === message.author.id) {
                 const reminders = await Reminder.find({ user: user.id });
@@ -40,7 +41,7 @@ const command: Command = {
                     .setColor(client.config_embeds.default)
                     .setAuthor({ name: user.tag.endsWith("#0") ? user.username : user.tag, iconURL: user.displayAvatarURL({ extension: "png", forceStatic: false }), url: `https://discord.com/users/${user.id}` })
                     .setTitle(`${user.globalName || user.username}'s Reminders`)
-                    .setDescription(cap(reminders.map(r => `\`${r.id}\` (<t:${r.due.toString().slice(0, -3)}:R>):\n*${flagF ? cap(r.reason, 100): r.reason}*`).join("\n"), 4000))
+                    .setDescription(cap(reminders.map(r => `\`${r.id}\` (<t:${r.due.toString().slice(0, -3)}:R>):\n*${!flagF ? cap(r.reason, 100): r.reason}*`).join("\n"), 4000))
 
                 message.reply({ embeds: [list] });
                 return;
@@ -60,7 +61,7 @@ const command: Command = {
             const list = new Discord.EmbedBuilder()
                 .setColor(client.config_embeds.default)
                 .setTitle("Your Reminders")
-                .setDescription(cap(reminders.map(r => `\`${r.id}\` (<t:${r.due.toString().slice(0, -3)}:R>):\n*${flagF ? cap(r.reason, 100): r.reason}*`).join("\n"), 4000))
+                .setDescription(cap(reminders.map(r => `\`${r.id}\` (<t:${r.due.toString().slice(0, -3)}:R>):\n*${!flagF ? cap(r.reason, 100): r.reason}*`).join("\n"), 4000))
 
             if(!flagF) list.setFooter({ text: "Use the -f flag to view full reasons." });
 
