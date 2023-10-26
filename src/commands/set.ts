@@ -20,6 +20,8 @@ const command: Command = {
             const reason = args.slice(1).join(" ");
             const flagI = args.includes("-i");
 
+            args = args.filter(a => a !== "-i");
+
             if(!time) {
                 const error = new Discord.EmbedBuilder()
                     .setColor(client.config_embeds.error)

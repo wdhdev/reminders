@@ -22,6 +22,8 @@ const command: Command = {
             // Check for full list flag -f
             const flagF = args.includes("-f");
 
+            args = args.filter(a => a !== "-f");
+
             if(user.id !== message.author.id && main.owner === message.author.id) {
                 const reminders = await Reminder.find({ user: user.id });
 
