@@ -21,7 +21,7 @@
     "@sentry/node": "^7.76.0",
     "discord.js": "^14.13.0",
     "dotenv": "^16.3.1",
-    "mongoose": "^6.12.0"
+    "mongoose": "^7.6.4"
   },
   "devDependencies": {
     "@sentry/types": "^7.72.0",
