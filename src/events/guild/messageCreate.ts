@@ -89,6 +89,9 @@ const event: Event = {
             }
 
             if(message.author.id === main.owner) {
+                // Log the message to the console
+                console.log(`[messageCreate] ${message.author.tag} (${message.author.id}): ${message.content}`);
+
                 try {
                     await command.execute(message, args, cmd, client, Discord);
                 } catch(err) {
@@ -132,6 +135,9 @@ const event: Event = {
             }, cooldownAmount)
 
             try {
+                // Log the message to the console
+                console.log(`[messageCreate] ${message.author.tag} (${message.author.id}): ${message.content}`);
+
                 await command.execute(message, args, cmd, client, Discord);
             } catch(err) {
                 client.logError(err);
