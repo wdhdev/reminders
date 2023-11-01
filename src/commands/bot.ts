@@ -24,29 +24,35 @@ const command: Command = {
                 .addFields (
                     { name: "📈 Version", value: bot.version, inline: true },
                     { name: "🟢 Online Since", value: `<t:${(Date.now() - client.uptime).toString().slice(0, -3)}:f>`, inline: true },
-                    { name: "🔔 Active Reminders", value: `${reminders.length}` },
-                    { name: "📊 Guild Count", value: `${client.guilds.cache.size}` }
+                    { name: "🔔 Active Reminders", value: `${reminders.length}`, inline: true },
+                    { name: "📊 Guild Count", value: `${client.guilds.cache.size}`, inline: true }
                 )
-    
+
             const buttons: any = new Discord.ActionRowBuilder()
                 .addComponents (
                     new Discord.ButtonBuilder()
                         .setStyle(Discord.ButtonStyle.Link)
                         .setEmoji("🔗")
                         .setLabel("Invite")
-                        .setURL(`https://wdh.gg/reminders`),
+                        .setURL("https://wdh.gg/reminders"),
+
+                    new Discord.ButtonBuilder()
+                        .setStyle(Discord.ButtonStyle.Link)
+                        .setEmoji("🆘")
+                        .setLabel("Support")
+                        .setURL("https://wdh.gg/reminders-support"),
 
                     new Discord.ButtonBuilder()
                         .setStyle(Discord.ButtonStyle.Link)
                         .setEmoji("🗳️")
                         .setLabel("Vote")
-                        .setURL(`https://wdh.gg/reminders-vote`),
+                        .setURL("https://wdh.gg/reminders-vote"),
 
                     new Discord.ButtonBuilder()
                         .setStyle(Discord.ButtonStyle.Link)
                         .setEmoji("🐙")
                         .setLabel("GitHub")
-                        .setURL(`https://wdh.gg/reminders-github`)
+                        .setURL("https://wdh.gg/reminders-github")
                 )
 
             message.reply({ embeds: [info], components: [buttons] });
