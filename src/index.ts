@@ -12,7 +12,7 @@ import ExtendedClient from "./classes/ExtendedClient";
 import config from "./config";
 
 const client = new ExtendedClient({
-    intents: ["GuildMessages", "MessageContent"],
+    intents: ["Guilds", "GuildMessages", "MessageContent"],
     presence: {
         activities: [
             {
