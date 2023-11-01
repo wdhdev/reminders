@@ -4,9 +4,9 @@ const schema = new Schema({
     id: String,
     user: String,
     channel: String,
+    delay: Number,
     set: String,
     due: String,
-    delay: Number,
     reason: String
 })
 

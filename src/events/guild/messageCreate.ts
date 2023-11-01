@@ -21,7 +21,7 @@ const event: Event = {
             if(message.content.startsWith(`<@!${client.user.id}>`) || message.content.startsWith(`<@${client.user.id}>`)) {
                 const mention = new Discord.EmbedBuilder()
                     .setColor(client.config_embeds.default)
-                    .setDescription(`👋 Hello there **${message.author.globalName || message.author.username}**!\n\n🛎️ My name is **${client.user.username}** and I am a reminder bot.\n⏰ I can remind you of things you need to do, or just send you a message at a certain time!\n\n✨ To get started with me, use the command: \`${main.prefix}help\``)
+                    .setDescription(`👋 Hello there **${message.author.globalName || message.author.username}**!\n\n👤 My name is **${client.user.username}** and I am a reminder bot.\n⏰ I can remind you of things you need to do, or just send you a message at a certain time!\n\n✨ To get started with me, use the command: \`${main.prefix}help\``)
                     .setTimestamp()
 
                 const buttons: any = new Discord.ActionRowBuilder()
