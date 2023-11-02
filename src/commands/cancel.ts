@@ -43,7 +43,7 @@ const command: Command = {
             clearTimeout(client.reminders.get(timeoutId));
             client.reminders.delete(timeoutId);
 
-            await reminder.delete();
+            await reminder.deleteOne();
 
             const cancelled = new Discord.EmbedBuilder()
                 .setColor(client.config_embeds.default)

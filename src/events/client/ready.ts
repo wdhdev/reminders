@@ -44,7 +44,7 @@ const event: Event = {
                     } catch {}
                 }
 
-                await reminder.delete();
+                await reminder.deleteOne();
                 reminders = reminders.filter(r => r !== reminder);
             }
 
@@ -76,7 +76,7 @@ const event: Event = {
                         } catch {}
                     }
 
-                    await reminder.delete();
+                    await reminder.deleteOne();
                     client.reminders.delete(`${reminder.user}-${reminder.id}`);
                 }, delay);
 
