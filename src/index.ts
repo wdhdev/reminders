@@ -14,12 +14,6 @@ import config from "./config";
 const client = new ExtendedClient({
     intents: ["Guilds", "GuildMessages", "MessageContent"],
     presence: {
-        activities: [
-            {
-                name: "🔔 Reminding you » @Reminders",
-                type: Discord.ActivityType.Custom
-            }
-        ],
         status: "online"
     }
 })

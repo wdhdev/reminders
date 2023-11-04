@@ -18,6 +18,21 @@ const event: Event = {
             // Register Commands
             await globalCommands(client);
 
+            // Update status every 15 seconds
+            setInterval(async () => {
+                const reminders = await Reminder.find({});
+
+                client.user.setPresence({
+                    activities: [
+                        {
+                            name: `🔔 ${reminders.length} Active Reminder${reminders.length === 1 ? "" : "s"}`,
+                            type: Discord.ActivityType.Custom
+                        }
+                    ],
+                    status: "online"
+                })
+            }, 15000)
+
             // Manage timeouts
             let reminders = await Reminder.find({});
 
