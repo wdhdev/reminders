@@ -1,24 +1,29 @@
-import Command from "../classes/Command";
-import ExtendedClient from "../classes/ExtendedClient";
-import { Message } from "discord.js";
+import Command from "../../classes/Command";
+import ExtendedClient from "../../classes/ExtendedClient";
+import { CommandInteraction } from "discord.js";
 
-import { emojis as emoji } from "../config";
+import { emojis as emoji } from "../../config";
 
 const command: Command = {
     name: "ping",
-    description: "Get the bot's latency.",
-    aliases: ["latency"],
+    description: "Check the bot's latency.",
+    options: [],
+    default_member_permissions: null,
     botPermissions: [],
-    cooldown: 5,
+    cooldown: 10,
     enabled: true,
-    async execute(message: Message, args: string[], cmd: Command, client: ExtendedClient & any, Discord: typeof import("discord.js")) {
+    deferReply: true,
+    ephemeral: true,
+    async execute(interaction: CommandInteraction, client: ExtendedClient, Discord: typeof import("discord.js")) {
         try {
-            const botLatency = Date.now() - message.createdTimestamp;
+            // Get ping
+            const botLatency = Date.now() - interaction.createdTimestamp;
             const apiLatency = Math.round(client.ws.ping);
 
             let botLatencyValue;
             let apiLatencyValue;
 
+            // Set which connection emoji to use for botLatency
             if(botLatency >= 0 && botLatency <= 99) {
                 botLatencyValue = `${emoji.connection_excellent} ${botLatency}ms`;
             } else if(botLatency >= 100 && botLatency <= 199) {
@@ -27,6 +32,7 @@ const command: Command = {
                 botLatencyValue = `${emoji.connection_bad} ${botLatency}ms`;
             }
 
+            // Set which connection emoji to use for apiLatency
             if(apiLatency >= 0 && apiLatency <= 99) {
                 apiLatencyValue = `${emoji.connection_excellent} ${apiLatency}ms`;
             } else if(apiLatency >= 100 && apiLatency <= 199) {
@@ -42,9 +48,9 @@ const command: Command = {
                     { name: "API Latency", value: apiLatencyValue, inline: true }
                 )
 
-            message.reply({ embeds: [ping] });
+            await interaction.editReply({ embeds: [ping] });
         } catch(err) {
-            client.logCommandError(err, message, Discord);
+            client.logCommandError(err, interaction, Discord);
         }
     }
 }

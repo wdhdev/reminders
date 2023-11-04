@@ -16,7 +16,7 @@ const client = new ExtendedClient({
     presence: {
         activities: [
             {
-                name: `🔔 @Reminders`,
+                name: "🔔 Reminding you » @Reminders",
                 type: Discord.ActivityType.Custom
             }
         ],
@@ -46,6 +46,7 @@ loadHandlers(client);
 client.login(process.env.token);
 
 // Constants
+client.commandIds = new Discord.Collection();
 client.reminders = new Map();
 client.sentry = Sentry;
 

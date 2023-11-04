@@ -1,10 +1,11 @@
 import ExtendedClient from "../classes/ExtendedClient";
-import { Message } from "discord.js";
+import { CommandInteraction } from "discord.js";
 
 import fs from "fs";
+import { getDirs } from "../util/functions";
 
 export = async (client: ExtendedClient) => {
-    async function load() {
+    async function loadRoot() {
         const files = fs.readdirSync(`./dist/commands`).filter((file: String) => file.endsWith(".js"));
 
         for(const file of files) {
@@ -16,9 +17,22 @@ export = async (client: ExtendedClient) => {
         }
     }
 
-    await load();
+    async function loadDir(dir: String) {
+        const files = fs.readdirSync(`./dist/commands/${dir}`).filter((file: String) => file.endsWith(".js"));
 
-    client.logCommandError = async function (err: Error, message: Message, Discord: typeof import("discord.js")) {
+        for(const file of files) {
+            const command = require(`../commands/${dir}/${file}`);
+
+            client.commands.set(command.name, command);
+
+            console.log(`Loaded Command: ${command.name}`);
+        }
+    }
+
+    await loadRoot();
+    (await getDirs("./dist/commands")).forEach((dir: String) => loadDir(dir));
+
+    client.logCommandError = async function (err: Error, interaction: CommandInteraction, Discord: typeof import("discord.js")) {
         const id = client.sentry.captureException(err);
         console.error(err);
 
@@ -31,7 +45,7 @@ export = async (client: ExtendedClient) => {
             )
             .setTimestamp()
 
-        message.reply({ embeds: [error] });
+        interaction.deferred || interaction.replied ? await interaction.editReply({ embeds: [error] }) : await interaction.reply({ embeds: [error], ephemeral: true });
     }
 
     require("dotenv").config();
