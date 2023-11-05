@@ -4,6 +4,7 @@ import { Message, PermissionResolvable } from "discord.js";
 
 import cap from "../../util/plainCap";
 import { emojis as emoji, main } from "../../config";
+import { inspect } from "util";
 
 const event: Event = {
     name: "messageCreate",
@@ -63,11 +64,11 @@ const event: Event = {
 
                         try {
                             // Run the code
-                            let output: string = await eval(args.join(" "));
+                            let output = await eval(args.join(" "));
+
+                            if(typeof output !== "string") output = inspect(output, { depth: 0 });
 
                             if(output !== null && output !== undefined) {
-                                output = output.toString();
-
                                 // Censor the database URL, Sentry DSN and bot token if they are returned
                                 if(output.includes(process.env.database) && process.env.database) output = output.replace(process.env.database, "[CENSORED_DATABASE_URL]");
                                 if(output.includes(process.env.sentry_dsn) && process.env.sentry_dsn) output = output.replace(process.env.sentry_dsn, "[CENSORED_SENTRY_DSN]");
@@ -78,10 +79,19 @@ const event: Event = {
                                 const evalOutput = new Discord.EmbedBuilder()
                                     .setColor(client.config_embeds.default)
                                     .setTitle("📤 Output")
-                                    .setDescription(`\`\`\`js\n${cap(output, 4000)}\`\`\``)
                                     .setTimestamp()
 
-                                msg.edit({ embeds: [evalInput, evalOutput] });
+                                if(output.length > 4000) {
+                                    const attachment = new Discord.AttachmentBuilder(Buffer.from(output), { name: `eval-${Date.now()}.txt` });
+
+                                    evalOutput.setDescription("Output was too long, it has been attached as a file.");
+
+                                    msg.edit({ embeds: [evalInput, evalOutput], files: [attachment] });
+                                } else {
+                                    evalOutput.setDescription(`\`\`\`js\n${output}\`\`\``);
+
+                                    msg.edit({ embeds: [evalInput, evalOutput] });
+                                }
                             } else {
                                 console.log(`[eval] [output] ${message.author.tag} (${message.author.id}):\n` + output);
 
@@ -94,20 +104,31 @@ const event: Event = {
                                 msg.edit({ embeds: [evalInput, evalOutput] });
                             }
                         } catch(err) {
+                            if(typeof err !== "string") err = inspect(err, { depth: 0 });
+
                             // Censor the database URL, Sentry DSN and bot token if they are returned
-                            if(err.message.includes(process.env.database) && process.env.database) err.message = err.message.replace(process.env.database, "[CENSORED_MONGODB_URI]");
-                            if(err.message.includes(process.env.sentry_dsn) && process.env.sentry_dsn) err.message = err.message.replace(process.env.sentry_dsn, "[CENSORED_SENTRY_DSN]");
-                            if(err.message.includes(process.env.token) && process.env.token) err.message = err.message.replace(process.env.token, "[CENSORED_BOT_TOKEN]");
+                            if(err.includes(process.env.database) && process.env.database) err = err.replace(process.env.database, "[CENSORED_MONGODB_URI]");
+                            if(err.includes(process.env.sentry_dsn) && process.env.sentry_dsn) err = err.replace(process.env.sentry_dsn, "[CENSORED_SENTRY_DSN]");
+                            if(err.includes(process.env.token) && process.env.token) err = err.replace(process.env.token, "[CENSORED_BOT_TOKEN]");
 
                             console.log(`[eval] [error] ${message.author.tag} (${message.author.id}):\n` + err);
 
                             const evalOutput = new Discord.EmbedBuilder()
                                 .setColor(client.config_embeds.error)
                                 .setTitle("📤 Output")
-                                .setDescription(`\`\`\`js\n${cap(err.message, 4000)}\`\`\``)
                                 .setTimestamp()
 
-                            msg.edit({ embeds: [evalInput, evalOutput] });
+                            if(err.length > 4000) {
+                                const attachment = new Discord.AttachmentBuilder(Buffer.from(err), { name: `eval-${Date.now()}.txt` });
+
+                                evalOutput.setDescription("Error was too long, it has been attached as a file.");
+
+                                msg.edit({ embeds: [evalInput, evalOutput], files: [attachment] });
+                            } else {
+                                evalOutput.setDescription(`\`\`\`js\n${err}\`\`\``);
+
+                                msg.edit({ embeds: [evalInput, evalOutput] });
+                            }
                         }
                     } catch(err) {
                         const id = client.sentry.captureException(err);
