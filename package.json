@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/wdhdev/reminders#readme",
   "dependencies": {
-    "@sentry/node": "^7.79.0",
+    "@sentry/node": "^7.80.0",
     "discord.js": "^14.13.0",
     "dotenv": "^16.3.1",
     "mongoose": "^8.0.0"
