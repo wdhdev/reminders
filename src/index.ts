@@ -12,7 +12,7 @@ import ExtendedClient from "./classes/ExtendedClient";
 import config from "./config";
 
 const client = new ExtendedClient({
-    intents: ["Guilds", "GuildMessages", "MessageContent"],
+    intents: ["Guilds", "GuildMessages"],
     presence: {
         status: "online"
     }

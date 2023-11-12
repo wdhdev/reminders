@@ -18,20 +18,6 @@ const event: Event = {
             // Ignore messages if the bot does not have the required permissions
             if(!message.guild.members.me.permissions.has(requiredPerms)) return;
 
-            // Temporary prefix deprecation message
-            if(message.content.startsWith(main.prefix)) {
-                const prefixDeprecation = new Discord.EmbedBuilder()
-                    .setColor(client.config_embeds.default)
-                    .setTitle("Prefix Deprecation")
-                    .setDescription(`⚠️ The prefix \`${main.prefix}\` is deprecated. Please use slash commands instead.`)
-                    .addFields (
-                        { name: "Why?", value: "The Reminders bot has been forced to move to slash commands due to Discord not approving us for the [message content intent](https://discord.com/developers/docs/topics/gateway#message-content-intent), which is required for the bot to function properly." }
-                    )
-
-                message.reply({ embeds: [prefixDeprecation] });
-                return;
-            }
-
             if(message.content.startsWith(`<@!${client.user.id}>`) || message.content.startsWith(`<@${client.user.id}>`)) {
                 const args = message.content.slice(`<@${client.user.id}>`.length).trim().split(/ +/g);
                 const command = args.shift().toLowerCase();

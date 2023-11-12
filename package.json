@@ -1,6 +1,6 @@
 {
   "name": "reminders",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Set reminders for things you need to do.",
   "main": "dist/index.js",
   "scripts": {

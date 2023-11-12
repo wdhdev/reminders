@@ -22,9 +22,9 @@ const command: Command = {
         {
             type: 3,
             name: "time",
-            description: "Use \"s\" for seconds, \"m\" for minutes, \"h\" for hours, or \"d\" for days.",
+            description: "Use \"d\" for days, \"h\" for hours, \"m\" for minutes, or \"s\" for seconds.",
             min_length: 2,
-            max_length: 6,
+            max_length: 16,
             required: true
         },
 
@@ -47,46 +47,43 @@ const command: Command = {
             let time: number | string = interaction.options.get("time").value as string;
             const returnId = interaction.options.get("return_id")?.value || false;
 
-            const timeValue = time.slice(0, -1) as unknown as number;
-            const timeUnit = time.toLowerCase().slice(-1);
-    
-            // Error checking
-            if(isNaN(timeValue) || timeValue <= 0) {
+            const reminders = await Reminder.find({ user: interaction.user.id });
+
+            if(reminders.length >= 5) {
                 const error = new Discord.EmbedBuilder()
                     .setColor(client.config_embeds.error)
-                    .setDescription(`${emoji.cross} Invalid time unit. Use \`s\` for seconds, \`m\` for minutes, \`h\` for hours, or \`d\` for days.`)
+                    .setDescription(`${emoji.cross} You can only have up to 5 active reminders at once!`)
 
                 await interaction.editReply({ embeds: [error] });
                 return;
             }
-    
-            // Convert time to milliseconds
-            switch (timeUnit) {
-                case "s": // seconds
-                    time = timeValue * 1000;
-                    break;
-                case "m": // minutes
-                    time = timeValue * 60 * 1000;
-                    break;
-                case "h": // hours
-                    time = timeValue * 60 * 60 * 1000;
-                    break;
-                case "d": // days
-                    time = timeValue * 24 * 60 * 60 * 1000;
-                    break;
-                default:
-                    const error = new Discord.EmbedBuilder()
-                        .setColor(client.config_embeds.error)
-                        .setDescription(`${emoji.cross} Invalid time unit. Use \`s\` for seconds, \`m\` for minutes, \`h\` for hours, or \`d\` for days.`)
 
-                    await interaction.editReply({ embeds: [error] });
-                    return;
-            }
+            const timeRegex = /^(\d+d)?(\d+h)?(\d+m)?(\d+s)?$/;
+            time = time.toLowerCase().replace(/\s/g, "");
+            const match = timeRegex.exec(time);
 
-            if(time > 2**31 - 1) {
+            if(!match) {
                 const error = new Discord.EmbedBuilder()
                     .setColor(client.config_embeds.error)
-                    .setDescription(`${emoji.cross} Please provide a valid time! (Cannot be more than 24 days)`)
+                    .setDescription(`${emoji.cross} Invalid time format. Use \`d\` for days, \`h\` for hours, \`m\` for minutes, or \`s\` for seconds.`)
+
+                await interaction.editReply({ embeds: [error] });
+                return;
+            }
+
+            const days = match[1] ? parseInt(match[1]) : 0;
+            const hours = match[2] ? parseInt(match[2]) : 0;
+            const minutes = match[3] ? parseInt(match[3]) : 0;
+            const seconds = match[4] ? parseInt(match[4]) : 0;
+
+            time = days * 24 * 60 * 60 * 1000 + hours * 60 * 60 * 1000 + minutes * 60 * 1000 + seconds * 1000;
+
+            const maxTime = 24 * 60 * 60 * 1000 * 24;
+
+            if(time > maxTime) {
+                const error = new Discord.EmbedBuilder()
+                    .setColor(client.config_embeds.error)
+                    .setDescription(`${emoji.cross} Your reminder cannot be more than 24 days in the future.`)
 
                 await interaction.editReply({ embeds: [error] });
                 return;

@@ -47,7 +47,7 @@ const event: Event = {
                     .setDescription(reminder.reason)
                     .addFields (
                         { name: "Set", value: `<t:${reminder.set.toString().slice(0, -3)}:f>`, inline: true },
-                        { name: "Overdue since", value: `<t:${reminder.due.toString().slice(0, -3)}:R>`, inline: true }
+                        { name: "Overdue Since", value: `<t:${reminder.due.toString().slice(0, -3)}:R>`, inline: true }
                     )
                     .setFooter({ text: `ID: ${reminder.id}` })
                     .setTimestamp()
