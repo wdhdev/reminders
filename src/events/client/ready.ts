@@ -18,20 +18,18 @@ const event: Event = {
             // Register Commands
             await globalCommands(client);
 
-            // Update status every 15 seconds
+            // Update status every 20 seconds
             setInterval(async () => {
-                const reminders = await Reminder.find({});
-
                 client.user.setPresence({
                     activities: [
                         {
-                            name: `🔔 ${reminders.length} Active Reminder${reminders.length === 1 ? "" : "s"}`,
+                            name: `🔔 ${client.reminders.size} Active Reminder${client.reminders.size === 1 ? "" : "s"}`,
                             type: Discord.ActivityType.Custom
                         }
                     ],
                     status: "online"
                 })
-            }, 15000)
+            }, 20000)
 
             // Manage timeouts
             let reminders = await Reminder.find({});
@@ -71,7 +69,7 @@ const event: Event = {
             for(const reminder of reminders) {
                 const delay = Number(reminder.due) - Date.now();
 
-                const timeout = setTimeout(async () => {
+                client.reminders.set(`${reminder.user}-${reminder.id}`, setTimeout(async () => {
                     const user = client.users.cache.get(reminder.user);
 
                     const embed = new Discord.EmbedBuilder()
@@ -98,9 +96,7 @@ const event: Event = {
 
                     await reminder.deleteOne();
                     client.reminders.delete(`${reminder.user}-${reminder.id}`);
-                }, delay);
-
-                client.reminders.set(`${reminder.user}-${reminder.id}`, timeout);
+                }, delay))
             }
         } catch(err) {
             client.logError(err);

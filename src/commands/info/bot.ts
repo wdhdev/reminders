@@ -4,8 +4,6 @@ import { CommandInteraction } from "discord.js";
 
 const bot = require("../../../package.json");
 
-import Reminder from "../../models/Reminder";
-
 const command: Command = {
     name: "bot",
     description: "Different information about the bot.",
@@ -18,8 +16,6 @@ const command: Command = {
     ephemeral: true,
     async execute(interaction: CommandInteraction, client: ExtendedClient, Discord: typeof import("discord.js")) {
         try {
-            const reminders = await Reminder.find();
-
             const info = new Discord.EmbedBuilder()
                 .setColor(client.config_embeds.default)
                 .setAuthor({ name: client.user.tag, iconURL: client.user.displayAvatarURL({ extension: "png", forceStatic: false }), url: `https://discord.com/users/${client.user.id}` })
@@ -27,7 +23,7 @@ const command: Command = {
                 .addFields (
                     { name: "📈 Version", value: bot.version, inline: true },
                     { name: "🟢 Online Since", value: `<t:${(Date.now() - client.uptime).toString().slice(0, -3)}:f>`, inline: true },
-                    { name: "🔔 Active Reminders", value: `${reminders.length}`, inline: true },
+                    { name: "🔔 Active Reminders", value: `${client.reminders.size}`, inline: true },
                     { name: "📊 Guild Count", value: `${client.guilds.cache.size}`, inline: true }
                 )
 
