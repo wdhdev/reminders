@@ -19,17 +19,17 @@ const event: Event = {
             await globalCommands(client);
 
             // Update status every 20 seconds
-            setInterval(async () => {
-                client.user.setPresence({
-                    activities: [
-                        {
-                            name: `🔔 ${client.reminders.size} Active Reminder${client.reminders.size === 1 ? "" : "s"}`,
-                            type: Discord.ActivityType.Custom
-                        }
-                    ],
-                    status: "online"
-                })
-            }, 20000)
+            // setInterval(async () => {
+            //     client.user.setPresence({
+            //         activities: [
+            //             {
+            //                 name: `🔔 ${client.reminders.size} Active Reminder${client.reminders.size === 1 ? "" : "s"}`,
+            //                 type: Discord.ActivityType.Custom
+            //             }
+            //         ],
+            //         status: "online"
+            //     })
+            // }, 20000)
 
             // Manage timeouts
             let reminders = await Reminder.find({});
@@ -37,8 +37,6 @@ const event: Event = {
             const dueReminders = reminders.filter(reminder => reminder.due <= Date.now().toString());
 
             for(const reminder of dueReminders) {
-                const user = client.users.cache.get(reminder.user);
-
                 const embed = new Discord.EmbedBuilder()
                     .setColor(client.config_embeds.default)
                     .setTitle("Overdue Reminder")
@@ -51,6 +49,8 @@ const event: Event = {
                     .setTimestamp()
 
                 try {
+                    const user = client.users.cache.get(reminder.user);
+
                     await user.send({ embeds: [embed] });
                 } catch {
                     try {
@@ -70,8 +70,6 @@ const event: Event = {
                 const delay = Number(reminder.due) - Date.now();
 
                 client.reminders.set(`${reminder.user}-${reminder.id}`, setTimeout(async () => {
-                    const user = client.users.cache.get(reminder.user);
-
                     const embed = new Discord.EmbedBuilder()
                         .setColor(client.config_embeds.default)
                         .setTitle("Reminder")
@@ -83,6 +81,8 @@ const event: Event = {
                         .setTimestamp()
 
                     try {
+                        const user = client.users.cache.get(reminder.user);
+
                         await user.send({ embeds: [embed] });
                     } catch {
                         try {
