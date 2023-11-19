@@ -13,7 +13,6 @@ import config from "./config";
 
 const client = new ExtendedClient({
     intents: ["Guilds", "GuildMessages"],
-    shards: "auto",
     presence: {
         activities: [
             {
