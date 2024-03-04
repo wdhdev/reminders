@@ -24,8 +24,7 @@ const command: Command = {
                     { name: "📈 Version", value: bot.version, inline: true },
                     { name: "🟢 Online Since", value: `<t:${(Date.now() - client.uptime).toString().slice(0, -3)}:f>`, inline: true },
                     { name: "🔔 Active Reminders", value: `${client.reminders.size}`, inline: true },
-                    { name: "📊 Guild Count", value: `${client.guilds.cache.size}`, inline: true },
-                    { name: "🔍 Shard ID", value: `${client.shard.ids[0] + 1} / ${client.shard.count + 1}` }
+                    { name: "📊 Guild Count", value: `${client.guilds.cache.size}`, inline: true }
                 )
 
             const buttons: any = new Discord.ActionRowBuilder()
