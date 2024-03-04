@@ -35,11 +35,11 @@ const event: Event = {
             const dueReminders = reminders.filter(reminder => reminder.due <= Date.now().toString());
 
             for(const reminder of dueReminders) {
-                if(!client.guilds.cache.has(reminder.guild)) {
-                    await reminder.deleteOne();
-                    reminders = reminders.filter(r => r !== reminder);
-                    continue;
-                }
+                // if(!client.guilds.cache.has(reminder.guild)) {
+                //     await reminder.deleteOne();
+                //     reminders = reminders.filter(r => r !== reminder);
+                //     continue;
+                // }
 
                 const embed = new Discord.EmbedBuilder()
                     .setColor(client.config_embeds.default)
@@ -71,10 +71,10 @@ const event: Event = {
             }
 
             for(const reminder of reminders) {
-                if(!client.guilds.cache.has(reminder.guild)) {
-                    await reminder.deleteOne();
-                    continue;
-                }
+                // if(!client.guilds.cache.has(reminder.guild)) {
+                //     await reminder.deleteOne();
+                //     continue;
+                // }
 
                 const delay = Number(reminder.due) - Date.now();
 
