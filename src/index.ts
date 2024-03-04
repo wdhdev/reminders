@@ -22,7 +22,7 @@ const client = new ExtendedClient({
         ],
         status: "online"
     },
-    shards: 10
+    shardCount: 10
 })
 
 // Error Handling
