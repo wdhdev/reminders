@@ -28,7 +28,7 @@ const command: Command = {
     ephemeral: true,
     async execute(interaction: CommandInteraction, client: ExtendedClient, Discord: typeof import("discord.js")) {
         try {
-            const id = interaction.options.get("id").value;
+            const id = interaction.options.get("id").value as string;
 
             const reminder = await Reminder.findOne({ reminder_id: id, user: interaction.user.id });
 

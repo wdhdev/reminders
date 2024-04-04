@@ -89,7 +89,7 @@ const command: Command = {
                 return;
             }
 
-            const id = randomUUID().slice(0, 8);
+            const id = randomUUID().slice(0, 8) as string;
 
             const reminder = await new Reminder({
                 reminder_id: id,
