@@ -1,7 +1,7 @@
 import { model, Schema } from "mongoose";
 
 const schema = new Schema({
-    id: String,
+    reminder_id: String,
     user: String,
     guild: String,
     channel: String,

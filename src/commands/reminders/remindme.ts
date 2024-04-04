@@ -92,7 +92,7 @@ const command: Command = {
             const id = randomUUID().slice(0, 8);
 
             const reminder = await new Reminder({
-                id: id,
+                reminder_id: id,
                 user: interaction.user.id,
                 guild: interaction.guild.id,
                 channel: interaction.channel.id,
@@ -126,7 +126,7 @@ const command: Command = {
                 }
 
                 client.reminders.delete(`${interaction.user.id}-${id}`);
-                await Reminder.findOneAndDelete({ id: id, user: interaction.user.id });
+                await Reminder.findOneAndDelete({ reminder_id: id, user: interaction.user.id });
             }, time))
 
             const reminderSet = new Discord.EmbedBuilder()

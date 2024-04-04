@@ -30,7 +30,7 @@ const command: Command = {
         try {
             const id = interaction.options.get("id").value;
 
-            const reminder = await Reminder.findOne({ id: id, user: interaction.user.id });
+            const reminder = await Reminder.findOne({ reminder_id: id, user: interaction.user.id });
 
             if(!reminder) {
                 const error = new Discord.EmbedBuilder()

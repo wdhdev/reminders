@@ -39,7 +39,7 @@ const command: Command = {
             const id = interaction.options.get("id").value;
             const newReason = interaction.options.get("new-reason").value as string;
 
-            const reminder = await Reminder.findOne({ id: id, user: interaction.user.id });
+            const reminder = await Reminder.findOne({ reminder_id: id, user: interaction.user.id });
 
             if(!reminder) {
                 const error = new Discord.EmbedBuilder()
@@ -86,7 +86,7 @@ const command: Command = {
                 }
 
                 client.reminders.delete(`${interaction.user.id}-${id}`);
-                await Reminder.findOneAndDelete({ id: id, user: interaction.user.id });
+                await Reminder.findOneAndDelete({ reminder_id: id, user: interaction.user.id });
             }, Number(reminder.due) - Date.now()))
 
             const edited = new Discord.EmbedBuilder()
