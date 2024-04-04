@@ -41,6 +41,9 @@ const event: Event = {
                 //     continue;
                 // }
 
+                await reminder.deleteOne();
+                reminders = reminders.filter(r => r !== reminder);
+
                 const embed = new Discord.EmbedBuilder()
                     .setColor(client.config_embeds.default)
                     .setTitle("Overdue Reminder")
@@ -65,9 +68,6 @@ const event: Event = {
                         await channel.send({ content: `<@${reminder.user}>`, embeds: [embed] });
                     } catch {}
                 }
-
-                await reminder.deleteOne();
-                reminders = reminders.filter(r => r !== reminder);
             }
 
             for(const reminder of reminders) {
@@ -79,6 +79,9 @@ const event: Event = {
                 const delay = Number(reminder.due) - Date.now();
 
                 client.reminders.set(`${reminder.user}-${reminder.id}`, setTimeout(async () => {
+                    await reminder.deleteOne();
+                    client.reminders.delete(`${reminder.user}-${reminder.id}`);
+
                     const embed = new Discord.EmbedBuilder()
                         .setColor(client.config_embeds.default)
                         .setTitle("Reminder")
@@ -102,9 +105,6 @@ const event: Event = {
                             await channel.send({ content: `<@${reminder.user}>`, embeds: [embed] });
                         } catch {}
                     }
-
-                    await reminder.deleteOne();
-                    client.reminders.delete(`${reminder.user}-${reminder.id}`);
                 }, delay))
             }
         } catch(err) {
