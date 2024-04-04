@@ -52,7 +52,7 @@ const event: Event = {
                         { name: "Set", value: `<t:${reminder.set.toString().slice(0, -3)}:f>`, inline: true },
                         { name: "Overdue Since", value: `<t:${reminder.due.toString().slice(0, -3)}:R>`, inline: true }
                     )
-                    .setFooter({ text: `ID: ${reminder.id}` })
+                    .setFooter({ text: `ID: ${reminder.reminder_id}` })
                     .setTimestamp()
 
                 try {
@@ -78,9 +78,9 @@ const event: Event = {
 
                 const delay = Number(reminder.due) - Date.now();
 
-                client.reminders.set(`${reminder.user}-${reminder.id}`, setTimeout(async () => {
+                client.reminders.set(`${reminder.user}-${reminder.reminder_id}`, setTimeout(async () => {
                     await reminder.deleteOne();
-                    client.reminders.delete(`${reminder.user}-${reminder.id}`);
+                    client.reminders.delete(`${reminder.user}-${reminder.reminder_id}`);
 
                     const embed = new Discord.EmbedBuilder()
                         .setColor(client.config_embeds.default)
@@ -89,7 +89,7 @@ const event: Event = {
                         .addFields (
                             { name: "Set", value: `<t:${reminder.set.toString().slice(0, -3)}:f>` }
                         )
-                        .setFooter({ text: `ID: ${reminder.id}` })
+                        .setFooter({ text: `ID: ${reminder.reminder_id}` })
                         .setTimestamp()
 
                     try {

@@ -66,13 +66,13 @@ const command: Command = {
             const reminders = await Reminder.find({ user: interaction.user.id });
 
             // Filter reminders
-            const filteredReminders = reminders.filter((reminder) => reminder.id.startsWith(option.value));
+            const filteredReminders = reminders.filter((reminder) => reminder.reminder_id.startsWith(option.value));
 
             // Map reminders
             const choices = filteredReminders.map((reminder) => {
                 return {
-                    name: reminder.id,
-                    value: reminder.id
+                    name: reminder.reminder_id,
+                    value: reminder.reminder_id
                 }
             })
 

@@ -70,7 +70,7 @@ const command: Command = {
                     .addFields (
                         { name: "Set", value: `<t:${reminder.set.toString().slice(0, -3)}:f> (<t:${reminder.set.toString().slice(0, -3)}:R>)` }
                     )
-                    .setFooter({ text: `ID: ${reminder.id}` })
+                    .setFooter({ text: `ID: ${reminder.reminder_id}` })
                     .setTimestamp()
 
                 try {
@@ -106,13 +106,13 @@ const command: Command = {
             const reminders = await Reminder.find({ user: interaction.user.id });
 
             // Filter reminders
-            const filteredReminders = reminders.filter((reminder) => reminder.id.startsWith(option.value));
+            const filteredReminders = reminders.filter((reminder) => reminder.reminder_id.startsWith(option.value));
 
             // Map reminders
             const choices = filteredReminders.map((reminder) => {
                 return {
-                    name: reminder.id,
-                    value: reminder.id
+                    name: reminder.reminder_id,
+                    value: reminder.reminder_id
                 }
             })
 

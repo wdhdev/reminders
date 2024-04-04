@@ -110,7 +110,7 @@ const command: Command = {
                     .addFields (
                         { name: "Set", value: `<t:${reminder.set.toString().slice(0, -3)}:f> (<t:${reminder.set.toString().slice(0, -3)}:R>)` }
                     )
-                    .setFooter({ text: `ID: ${reminder.id}` })
+                    .setFooter({ text: `ID: ${reminder.reminder_id}` })
                     .setTimestamp()
 
                 try {
@@ -131,7 +131,7 @@ const command: Command = {
 
             const reminderSet = new Discord.EmbedBuilder()
                 .setColor(client.config_embeds.default)
-                .setDescription(`${emoji.tick} Your reminder has been set for <t:${reminder.due.toString().slice(0, -3)}:f>${returnId ? ` with the ID \`${reminder.id}\`` : ""}!`)
+                .setDescription(`${emoji.tick} Your reminder has been set for <t:${reminder.due.toString().slice(0, -3)}:f>${returnId ? ` with the ID \`${reminder.reminder_id}\`` : ""}!`)
 
             await interaction.editReply({ embeds: [reminderSet] });
         } catch(err) {
