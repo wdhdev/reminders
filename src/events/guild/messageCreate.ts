@@ -152,19 +152,19 @@ const event: Event = {
                             .setStyle(Discord.ButtonStyle.Link)
                             .setEmoji("🆘")
                             .setLabel("Support")
-                            .setURL("https://wdh.gg/reminders-support"),
+                            .setURL("https://wdh.gg/reminders/support"),
 
                         new Discord.ButtonBuilder()
                             .setStyle(Discord.ButtonStyle.Link)
                             .setEmoji("🗳️")
                             .setLabel("Vote")
-                            .setURL("https://wdh.gg/reminders-vote"),
+                            .setURL("https://wdh.gg/reminders/vote"),
 
                         new Discord.ButtonBuilder()
                             .setStyle(Discord.ButtonStyle.Link)
                             .setEmoji("🐙")
                             .setLabel("GitHub")
-                            .setURL("https://wdh.gg/reminders-github")
+                            .setURL("https://wdh.gg/reminders/github")
                     )
 
                 message.reply({ embeds: [mention], components: [buttons] });
