@@ -1,6 +1,6 @@
 import Command from "../../classes/Command";
 import ExtendedClient from "../../classes/ExtendedClient";
-import { AutocompleteInteraction, CommandInteraction, Interaction, TextChannel } from "discord.js";
+import { AutocompleteInteraction, ChatInputCommandInteraction, Interaction, TextChannel } from "discord.js";
 
 import { emojis as emoji } from "../../config";
 
@@ -34,7 +34,7 @@ const command: Command = {
     enabled: true,
     deferReply: true,
     ephemeral: true,
-    async execute(interaction: CommandInteraction, client: ExtendedClient, Discord: typeof import("discord.js")) {
+    async execute(interaction: ChatInputCommandInteraction, client: ExtendedClient, Discord: typeof import("discord.js")) {
         try {
             const id = interaction.options.get("id").value as string;
             const newReason = interaction.options.get("new-reason").value as string;
