@@ -47,9 +47,11 @@ client.login(process.env.token);
 
 // Constants
 client.commandIds = new Discord.Collection();
-client.maxTime = 10 * 60 * 1000; // 10 minutes
 client.reminders = new Map();
 client.sentry = Sentry;
+
+client.maxReminderTime = 365 * 24 * 60 * 60 * 1000; // 1 year (365 days)
+client.timeToSet = 10 * 60 * 1000; // 10 minutes
 
 client.validPermissions = [
     "CreateInstantInvite",

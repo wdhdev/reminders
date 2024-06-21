@@ -4,7 +4,7 @@ import ExtendedClient from "../classes/ExtendedClient";
 export default async function (reminder: any, client: ExtendedClient): Promise<Boolean> {
     const delay = Number(reminder.due) - Date.now();
 
-    if(delay > client.maxTime) return false;
+    if(delay > client.timeToSet) return false;
 
     client.reminders.set(`${reminder.user}-${reminder.reminder_id}`, setTimeout(async () => {
         await reminder.deleteOne();

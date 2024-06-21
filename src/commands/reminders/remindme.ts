@@ -70,14 +70,16 @@ const command: Command = {
 
             time = (days * 24 * 60 * 60 * 1000) + (hours * 60 * 60 * 1000) + (minutes * 60 * 1000) + (seconds * 1000);
 
-            // if(time > client.maxTime) {
-            //     const error = new Discord.EmbedBuilder()
-            //         .setColor(client.config_embeds.error)
-            //         .setDescription(`${emoji.cross} Your reminder cannot be more than 24 days in the future.`)
+            const maxReminderTimeDays = Math.floor(client.maxReminderTime / (24 * 60 * 60 * 1000));
 
-            //     await interaction.editReply({ embeds: [error] });
-            //     return;
-            // }
+            if(time > client.maxReminderTime) {
+                const error = new Discord.EmbedBuilder()
+                    .setColor(client.config_embeds.error)
+                    .setDescription(`${emoji.cross} Your reminder cannot be more than ${maxReminderTimeDays} day${maxReminderTimeDays === 1 ? "" : "s"} in the future.`)
+
+                await interaction.editReply({ embeds: [error] });
+                return;
+            }
 
             const id = randomUUID().slice(0, 8) as string;
 
@@ -92,8 +94,11 @@ const command: Command = {
                 reason: reason
             }).save()
 
-            if(time < client.maxTime) {
+            if(time < client.timeToSet) {
                 client.reminders.set(`${interaction.user.id}-${id}`, setTimeout(async () => {
+                    client.reminders.delete(`${interaction.user.id}-${id}`);
+                    await Reminder.findOneAndDelete({ reminder_id: id, user: interaction.user.id });
+
                     const embed = new Discord.EmbedBuilder()
                         .setColor(client.config_embeds.default)
                         .setTitle("Reminder")
@@ -115,9 +120,6 @@ const command: Command = {
                             await channel.send({ content: `${interaction.user}`, embeds: [embed] });
                         } catch {}
                     }
-
-                    client.reminders.delete(`${interaction.user.id}-${id}`);
-                    await Reminder.findOneAndDelete({ reminder_id: id, user: interaction.user.id });
                 }, time))
             }
 
