@@ -47,6 +47,7 @@ client.login(process.env.token);
 
 // Constants
 client.commandIds = new Discord.Collection();
+client.maxTime = 10 * 60 * 1000; // 10 minutes
 client.reminders = new Map();
 client.sentry = Sentry;
 

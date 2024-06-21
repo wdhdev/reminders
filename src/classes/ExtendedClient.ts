@@ -10,6 +10,7 @@ export default class ExtendedClient extends Client {
     public events: Collection<string, any>;
     public logCommandError: Function;
     public logError: Function;
+    public maxTime: number;
     public reminders: Map<string, NodeJS.Timeout>;
     public sentry: typeof Sentry;
     public validPermissions: string[];
