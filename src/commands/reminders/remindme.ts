@@ -37,7 +37,7 @@ const command: Command = {
     async execute(interaction: ChatInputCommandInteraction, client: ExtendedClient, Discord: typeof import("discord.js")) {
         try {
             const reason = interaction.options.get("reason").value as string;
-            let time: number | string = interaction.options.get("time").value as string;
+            let time: any = interaction.options.get("time").value as string;
 
             const reminders = await Reminder.find({ user: interaction.user.id });
 

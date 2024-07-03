@@ -97,5 +97,7 @@ client.validPermissions = [
     "ModerateMembers",
     "ViewCreatorMonetizationAnalytics",
     "UseSoundboard",
-    "SendVoiceMessages"
+    "SendVoiceMessages",
+    "SendPolls",
+    "UseExternalApps"
 ]
