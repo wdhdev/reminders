@@ -13,18 +13,18 @@ const command: Command = {
     options: [
         {
             type: 3,
-            name: "reason",
-            description: "The reason for the reminder.",
-            max_length: 1000,
+            name: "time",
+            description: "Use \"mo\" for months, \"d\" for days, \"h\" for hours, \"m\" for minutes, or \"s\" for seconds.",
+            min_length: 2,
+            max_length: 16,
             required: true
         },
 
         {
             type: 3,
-            name: "time",
-            description: "Use \"d\" for days, \"h\" for hours, \"m\" for minutes, or \"s\" for seconds.",
-            min_length: 2,
-            max_length: 16,
+            name: "reason",
+            description: "The reason for the reminder.",
+            max_length: 1000,
             required: true
         }
     ],
@@ -36,8 +36,8 @@ const command: Command = {
     ephemeral: true,
     async execute(interaction: ChatInputCommandInteraction, client: ExtendedClient, Discord: typeof import("discord.js")) {
         try {
+            let time: number | string = interaction.options.get("time").value as string;
             const reason = interaction.options.get("reason").value as string;
-            let time: any = interaction.options.get("time").value as string;
 
             const reminders = await Reminder.find({ user: interaction.user.id });
 
@@ -50,25 +50,34 @@ const command: Command = {
                 return;
             }
 
-            const timeRegex = /^(\d+d)?(\d+h)?(\d+m)?(\d+s)?$/;
+            const timeRegex = /^(\d+mo)?(\d+d)?(\d+h)?(\d+m)?(\d+s)?$/;
             time = time.toLowerCase().replace(/\s/g, "");
             const match = timeRegex.exec(time);
 
             if(!match) {
                 const error = new Discord.EmbedBuilder()
                     .setColor(client.config_embeds.error)
-                    .setDescription(`${emoji.cross} Invalid time format. Use \`d\` for days, \`h\` for hours, \`m\` for minutes, or \`s\` for seconds.`)
+                    .setDescription(`${emoji.cross} Invalid time format. Use \`mo\` for months, \`d\` for days, \`h\` for hours, \`m\` for minutes, or \`s\` for seconds.`)
 
                 await interaction.editReply({ embeds: [error] });
                 return;
             }
 
-            const days = match[1] ? parseInt(match[1]) : 0;
-            const hours = match[2] ? parseInt(match[2]) : 0;
-            const minutes = match[3] ? parseInt(match[3]) : 0;
-            const seconds = match[4] ? parseInt(match[4]) : 0;
+            // Get matched time values
+            const months = match[1] ? parseInt(match[1]) : 0;
+            const days = match[2] ? parseInt(match[2]) : 0;
+            const hours = match[3] ? parseInt(match[3]) : 0;
+            const minutes = match[4] ? parseInt(match[4]) : 0;
+            const seconds = match[5] ? parseInt(match[5]) : 0;
 
-            time = (days * 24 * 60 * 60 * 1000) + (hours * 60 * 60 * 1000) + (minutes * 60 * 1000) + (seconds * 1000);
+            // Time is in milliseconds
+            const second = 1000;
+            const minute = 60 * second;
+            const hour = 60 * minute;
+            const day = 24 * hour;
+            const month = 30 * day;
+
+            time = (months * month) + (days * day) + (hours * hour) + (minutes * minute) + (seconds * second);
 
             const maxReminderTimeDays = Math.floor(client.maxReminderTime / (24 * 60 * 60 * 1000));
 
