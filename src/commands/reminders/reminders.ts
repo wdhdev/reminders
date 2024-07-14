@@ -28,7 +28,7 @@ const command: Command = {
         try {
             const fullReasons = interaction.options.get("full_reasons")?.value || false;
 
-            const reminders = await Reminder.find({ user: interaction.user.id });
+            let reminders = await Reminder.find({ user: interaction.user.id });
 
             if(!reminders.length) {
                 const error = new Discord.EmbedBuilder()
@@ -38,6 +38,9 @@ const command: Command = {
                 await interaction.editReply({ embeds: [error] });
                 return;
             }
+
+            // Sort reminders by due date
+            reminders = reminders.sort((a: any, b: any) => a.due - b.due);
 
             const list = new Discord.EmbedBuilder()
                 .setColor(client.config_embeds.default)
