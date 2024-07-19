@@ -7,7 +7,8 @@ const schema = new Schema({
     delay: Number,
     set: String,
     due: String,
-    reason: String
+    reason: String,
+    send_in_channel: Boolean
 })
 
 export default model("reminders", schema, "reminders");

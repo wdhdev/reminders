@@ -20,18 +20,34 @@ export default async function (reminder: any, client: ExtendedClient): Promise<B
             .setFooter({ text: `ID: ${reminder.reminder_id}` })
             .setTimestamp()
 
-        try {
-            const user = client.users.cache.get(reminder.user);
-
-            await user.send({ embeds: [embed] });
-        } catch {
+        if(reminder?.send_in_channel) {
             try {
                 const channel = client.channels.cache.get(reminder.channel) as Discord.TextChannel;
 
-                if(!channel) return;
+                if(!channel) throw "Channel not found.";
 
                 await channel.send({ content: `<@${reminder.user}>`, embeds: [embed] });
-            } catch {}
+            } catch {
+                try {
+                    const user = client.users.cache.get(reminder.user);
+
+                    await user.send({ embeds: [embed] });
+                } catch {}
+            }
+        } else {
+            try {
+                const user = client.users.cache.get(reminder.user);
+
+                await user.send({ embeds: [embed] });
+            } catch {
+                try {
+                    const channel = client.channels.cache.get(reminder.channel) as Discord.TextChannel;
+
+                    if(!channel) return;
+
+                    await channel.send({ content: `<@${reminder.user}>`, embeds: [embed] });
+                } catch {}
+            }
         }
     }, delay))
 

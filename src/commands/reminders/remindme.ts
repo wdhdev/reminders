@@ -26,6 +26,13 @@ const command: Command = {
             description: "The reason for the reminder.",
             max_length: 1000,
             required: true
+        },
+
+        {
+            type: 5,
+            name: "send_in_channel",
+            description: "Send the reminder in this channel, instead of in a direct message.",
+            required: false
         }
     ],
     default_member_permissions: null,
@@ -38,6 +45,7 @@ const command: Command = {
         try {
             let time: number | string = interaction.options.get("time").value as string;
             const reason = interaction.options.get("reason").value as string;
+            const sendInChannel = interaction.options.get("send_in_channel")?.value || false as boolean;
 
             const reminders = await Reminder.find({ user: interaction.user.id });
 
@@ -99,7 +107,8 @@ const command: Command = {
                 set: Date.now(),
                 due: Date.now() + time,
                 delay: time,
-                reason: reason
+                reason: reason,
+                send_in_channel: sendInChannel
             }).save()
 
             if(time < client.timeToSet) {
@@ -117,16 +126,29 @@ const command: Command = {
                         .setFooter({ text: `ID: ${reminder.reminder_id}` })
                         .setTimestamp()
 
-                    try {
-                        await interaction.user.send({ embeds: [embed] });
-                    } catch {
+                    
+                    if(sendInChannel) {
                         try {
+                            const channel = client.channels.cache.get(interaction.channel.id) as TextChannel;
+
+                            if(!channel) throw "Channel not found.";
+
+                            await channel.send({ content: `${interaction.user}`, embeds: [embed] });
+                        } catch {
+                            try {
+                                await interaction.user.send({ embeds: [embed] });
+                            } catch {}
+                        }
+                    } else {
+                        try {
+                            await interaction.user.send({ embeds: [embed] });
+                        } catch {
                             const channel = client.channels.cache.get(interaction.channel.id) as TextChannel;
 
                             if(!channel) return;
 
                             await channel.send({ content: `${interaction.user}`, embeds: [embed] });
-                        } catch {}
+                        }
                     }
                 }, time))
             }
