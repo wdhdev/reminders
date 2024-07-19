@@ -95,7 +95,6 @@ const command: Command = {
             const reminder = await new Reminder({
                 reminder_id: id,
                 user: interaction.user.id,
-                guild: interaction.guild.id,
                 channel: interaction.channel.id,
                 set: Date.now(),
                 due: Date.now() + time,
