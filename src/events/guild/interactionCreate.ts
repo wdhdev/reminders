@@ -12,8 +12,6 @@ const event: Event = {
         try {
             const requiredPerms: PermissionResolvable = ["SendMessages", "EmbedLinks"];
 
-            // Ignore interactions not in a guild
-            if(!interaction.guild) return;
             // Ignore interactions if the bot does not have the required permissions
             if(!interaction.guild.members.me.permissions.has(requiredPerms)) return;
 
