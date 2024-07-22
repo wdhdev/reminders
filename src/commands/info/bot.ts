@@ -32,25 +32,25 @@ const command: Command = {
                         .setStyle(Discord.ButtonStyle.Link)
                         .setEmoji("🔗")
                         .setLabel("Invite")
-                        .setURL("https://remindersbot.xyz"),
+                        .setURL("https://wdh.gg/reminders"),
 
                     new Discord.ButtonBuilder()
                         .setStyle(Discord.ButtonStyle.Link)
                         .setEmoji("🆘")
                         .setLabel("Support")
-                        .setURL("https://remindersbot.xyz/support"),
+                        .setURL("https://wdh.gg/reminders/support"),
 
                     new Discord.ButtonBuilder()
                         .setStyle(Discord.ButtonStyle.Link)
                         .setEmoji("🗳️")
                         .setLabel("Vote")
-                        .setURL("https://remindersbot.xyz/vote"),
+                        .setURL("https://wdh.gg/reminders/vote"),
 
                     new Discord.ButtonBuilder()
                         .setStyle(Discord.ButtonStyle.Link)
                         .setEmoji("🐙")
                         .setLabel("GitHub")
-                        .setURL("https://remindersbot.xyz/github")
+                        .setURL("https://wdh.gg/reminders/github")
                 )
 
             await interaction.editReply({ embeds: [info], components: [buttons] });
