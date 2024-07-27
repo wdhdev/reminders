@@ -15,7 +15,7 @@ export default async function (reminder: any, client: ExtendedClient): Promise<B
             .setTitle("Reminder")
             .setDescription(reminder.reason)
             .addFields (
-                { name: "Set", value: `<t:${reminder.set.toString().slice(0, -3)}:f>` }
+                { name: "Set", value: `<t:${reminder.set.toString().slice(0, -3)}:f> (<t:${reminder.set.toString().slice(0, -3)}:R>)` }
             )
             .setFooter({ text: `ID: ${reminder.reminder_id}` })
             .setTimestamp()

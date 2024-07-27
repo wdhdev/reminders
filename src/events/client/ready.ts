@@ -31,8 +31,6 @@ const event: Event = {
             }, 30 * 1000) // 30 seconds
 
             // Manage timeouts
-            const setReminders: string[] = [];
-
             async function manageExistingTimeouts() {
                 let reminders = await Reminder.find({});
                 const dueReminders = reminders.filter(reminder => reminder.due <= Date.now().toString());
@@ -84,9 +82,7 @@ const event: Event = {
                 }
 
                 for(const reminder of reminders) {
-                    const result = await setReminder(reminder, client);
-
-                    if(result) setReminders.push(`${reminder.user}-${reminder.reminder_id}`);
+                    await setReminder(reminder, client);
                 }
             }
 
@@ -97,11 +93,9 @@ const event: Event = {
                     if(reminders.length === 0) return;
 
                     for(const reminder of reminders) {
-                        if(setReminders.includes(`${reminder.user}-${reminder.reminder_id}`)) continue;
+                        if(client.reminders.get(`${reminder.user}-${reminder.reminder_id}`)) continue;
 
-                        const result = await setReminder(reminder, client);
-
-                        if(result) setReminders.push(`${reminder.user}-${reminder.reminder_id}`);
+                        await setReminder(reminder, client);
                     }
                 }, 60000)
             })
