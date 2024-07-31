@@ -34,7 +34,7 @@ const command: Command = {
 
             if(!reminder) {
                 const error = new Discord.EmbedBuilder()
-                    .setColor(client.config_embeds.error)
+                    .setColor(client.config.embeds.error)
                     .setDescription(`${emoji.cross} I could not find that reminder!`)
 
                 await interaction.editReply({ embeds: [error] });
@@ -50,7 +50,7 @@ const command: Command = {
             await reminder.deleteOne();
 
             const cancelled = new Discord.EmbedBuilder()
-                .setColor(client.config_embeds.default)
+                .setColor(client.config.embeds.default)
                 .setDescription(`${emoji.tick} The reminder \`${id}\` has been cancelled!`)
 
             await interaction.editReply({ embeds: [cancelled] });

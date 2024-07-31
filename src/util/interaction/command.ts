@@ -15,7 +15,7 @@ export = async (client: ExtendedClient, Discord: typeof import("discord.js"), in
 
         if(!command.enabled) {
             const disabled = new Discord.EmbedBuilder()
-                .setColor(client.config_embeds.error)
+                .setColor(client.config.embeds.error)
                 .setDescription(`${emoji.cross} This command has been disabled!`)
 
             await interaction.reply({ embeds: [disabled], ephemeral: true });
@@ -35,7 +35,7 @@ export = async (client: ExtendedClient, Discord: typeof import("discord.js"), in
 
             if(invalidPerms.length) {
                 const permError = new Discord.EmbedBuilder()
-                    .setColor(client.config_embeds.error)
+                    .setColor(client.config.embeds.error)
                     .setDescription(`I am missing these permissions: \`${invalidPerms.join("\`, \`")}\``)
 
                 await interaction.reply({ embeds: [permError], ephemeral: true });
@@ -56,7 +56,7 @@ export = async (client: ExtendedClient, Discord: typeof import("discord.js"), in
                 client.logError(err);
 
                 const error = new Discord.EmbedBuilder()
-                    .setColor(client.config_embeds.error)
+                    .setColor(client.config.embeds.error)
                     .setDescription(`${emoji.cross} There was an error while executing that command!`)
 
                 command.deferReply ? await interaction.editReply({ embeds: [error] }) : await interaction.reply({ embeds: [error], ephemeral: true });
@@ -77,7 +77,7 @@ export = async (client: ExtendedClient, Discord: typeof import("discord.js"), in
                 const timeLeft: string = (((expirationTime - currentTime) / 1000).toFixed(0)).toString();
 
                 const cooldown = new Discord.EmbedBuilder()
-                    .setColor(client.config_embeds.error)
+                    .setColor(client.config.embeds.error)
                     .setDescription(`⏰ Please wait ${timeLeft} second${timeLeft === "1" ? "" : "s"} before running that command again!`)
 
                 command.deferReply ? await interaction.editReply({ embeds: [cooldown] }) : await interaction.reply({ embeds: [cooldown], ephemeral: true });
@@ -100,7 +100,7 @@ export = async (client: ExtendedClient, Discord: typeof import("discord.js"), in
             client.logError(err);
 
             const error = new Discord.EmbedBuilder()
-                .setColor(client.config_embeds.error)
+                .setColor(client.config.embeds.error)
                 .setDescription(`${emoji.cross} There was an error while executing that command!`)
 
             command.deferReply ? await interaction.editReply({ embeds: [error] }) : await interaction.reply({ embeds: [error], ephemeral: true });

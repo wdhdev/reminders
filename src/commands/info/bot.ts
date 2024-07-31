@@ -17,7 +17,7 @@ const command: Command = {
     async execute(interaction: ChatInputCommandInteraction, client: ExtendedClient, Discord: typeof import("discord.js")) {
         try {
             const info = new Discord.EmbedBuilder()
-                .setColor(client.config_embeds.default)
+                .setColor(client.config.embeds.default)
                 .setAuthor({ name: client.user.tag, iconURL: client.user.displayAvatarURL({ extension: "png", forceStatic: false }), url: `https://discord.com/users/${client.user.id}` })
                 .setDescription(bot.description)
                 .addFields (

@@ -40,7 +40,7 @@ const event: Event = {
                     reminders = reminders.filter(r => r !== reminder);
 
                     const embed = new Discord.EmbedBuilder()
-                        .setColor(client.config_embeds.default)
+                        .setColor(client.config.embeds.default)
                         .setTitle("Overdue Reminder")
                         .setDescription(reminder.reason)
                         .addFields (

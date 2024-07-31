@@ -4,14 +4,14 @@ import ExtendedClient from "../classes/ExtendedClient";
 export default async function (reminder: any, client: ExtendedClient): Promise<Boolean> {
     const delay = Number(reminder.due) - Date.now();
 
-    if(delay > client.timeToSet) return false;
+    if(delay > client.config.main.timeToSet) return false;
 
     client.reminders.set(`${reminder.user}-${reminder.reminder_id}`, setTimeout(async () => {
         await reminder.deleteOne();
         client.reminders.delete(`${reminder.user}-${reminder.reminder_id}`);
 
         const embed = new Discord.EmbedBuilder()
-            .setColor(client.config_embeds.default)
+            .setColor(client.config.embeds.default)
             .setTitle("Reminder")
             .setDescription(reminder.reason)
             .addFields (

@@ -81,7 +81,7 @@ const command: Command = {
             }
 
             const help = new Discord.EmbedBuilder()
-                .setColor(client.config_embeds.default)
+                .setColor(client.config.embeds.default)
                 .setThumbnail(client.user.displayAvatarURL({ extension: "png", forceStatic: false }))
                 .setTitle("Commands")
                 .setDescription(cmds.sort().join("\n"))
@@ -98,7 +98,7 @@ const command: Command = {
                 const cooldown = command.cooldown ? `${command.cooldown} second${command.cooldown === 1 ? "" : "s"}` : "None";
 
                 const commandHelp = new Discord.EmbedBuilder()
-                    .setColor(client.config_embeds.default)
+                    .setColor(client.config.embeds.default)
                     .setTitle(`Command: ${command.name}`)
                     .addFields (
                         { name: "Description", value: description },

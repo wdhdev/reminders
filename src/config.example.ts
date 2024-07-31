@@ -16,7 +16,9 @@ const emojis = {
 }
 
 const main = {
-    owner: ""
+    maxReminderTime: 365 * 24 * 60 * 60 * 1000, // 1 year (365 days)
+    owner: "",
+    timeToSet: 10 * 60 * 1000 // 10 minutes
 }
 
 export {

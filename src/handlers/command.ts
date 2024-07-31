@@ -37,7 +37,7 @@ export = async (client: ExtendedClient) => {
         console.error(err);
 
         const error = new Discord.EmbedBuilder()
-            .setColor(client.config_embeds.error)
+            .setColor(client.config.embeds.error)
             .setTitle("💥 An error occurred")
             .setDescription(`\`\`\`${err.message}\`\`\``)
             .addFields (

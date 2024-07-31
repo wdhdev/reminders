@@ -1,3 +1,4 @@
+import config from "./config";
 require("dotenv").config();
 
 import * as Sentry from "@sentry/node";
@@ -9,7 +10,6 @@ Sentry.init({
 
 import Discord from "discord.js";
 import ExtendedClient from "./classes/ExtendedClient";
-import config from "./config";
 
 const client = new ExtendedClient({
     intents: ["Guilds", "GuildMessages"],
@@ -24,16 +24,15 @@ const client = new ExtendedClient({
     }
 })
 
+// Config
+client.config = config;
+
 // Error Handling
 process.on("unhandledRejection", (err: Error) => Sentry.captureException(err));
 
 // Connect to Database
 import database from "./util/database";
 database();
-
-// Configs
-client.config_embeds = config.embeds;
-client.config_main = config.main;
 
 // Handlers
 client.commands = new Discord.Collection();
@@ -49,9 +48,6 @@ client.login(process.env.token);
 client.commandIds = new Discord.Collection();
 client.reminders = new Map();
 client.sentry = Sentry;
-
-client.maxReminderTime = 365 * 24 * 60 * 60 * 1000; // 1 year (365 days)
-client.timeToSet = 10 * 60 * 1000; // 10 minutes
 
 client.validPermissions = [
     "CreateInstantInvite",

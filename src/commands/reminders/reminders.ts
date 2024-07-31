@@ -32,7 +32,7 @@ const command: Command = {
 
             if(!reminders.length) {
                 const error = new Discord.EmbedBuilder()
-                    .setColor(client.config_embeds.error)
+                    .setColor(client.config.embeds.error)
                     .setDescription(`${emoji.cross} You do not have any reminders set.`)
 
                 await interaction.editReply({ embeds: [error] });
@@ -43,7 +43,7 @@ const command: Command = {
             reminders = reminders.sort((a: any, b: any) => a.due - b.due);
 
             const list = new Discord.EmbedBuilder()
-                .setColor(client.config_embeds.default)
+                .setColor(client.config.embeds.default)
                 .setTitle("Your Reminders")
                 .setDescription(cap(reminders.map(r => `\`${r.reminder_id}\` (<t:${r.due.toString().slice(0, -3)}:R>):\n*${!fullReasons ? cap(r.reason, 100): r.reason}*`).join("\n"), 4000))
 

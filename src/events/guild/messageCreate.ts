@@ -27,7 +27,7 @@ const event: Event = {
                     try {
                         if(!args[0]) {
                             const error = new Discord.EmbedBuilder()
-                                .setColor(client.config_embeds.error)
+                                .setColor(client.config.embeds.error)
                                 .setDescription(`${emoji.cross} No code was provided.`)
 
                             message.reply({ embeds: [error] });
@@ -37,13 +37,13 @@ const event: Event = {
                         console.log(`[eval] [input] ${message.author.tag} (${message.author.id}): ${args.join(" ")}`);
 
                         const evalInput = new Discord.EmbedBuilder()
-                            .setColor(client.config_embeds.default)
+                            .setColor(client.config.embeds.default)
                             .setTitle("📥 Input")
                             .setDescription(`\`\`\`js\n${cap(args.join(" "), 4000)}\`\`\``)
                             .setTimestamp()
 
                         const evaluating = new Discord.EmbedBuilder()
-                            .setColor(client.config_embeds.default)
+                            .setColor(client.config.embeds.default)
                             .setDescription(`${emoji.ping} Evaluating...`)
 
                         const msg = await message.reply({ embeds: [evaluating] });
@@ -63,7 +63,7 @@ const event: Event = {
                                 console.log(`[eval] [output] ${message.author.tag} (${message.author.id}):\n` + output);
 
                                 const evalOutput = new Discord.EmbedBuilder()
-                                    .setColor(client.config_embeds.default)
+                                    .setColor(client.config.embeds.default)
                                     .setTitle("📤 Output")
                                     .setTimestamp()
 
@@ -82,7 +82,7 @@ const event: Event = {
                                 console.log(`[eval] [output] ${message.author.tag} (${message.author.id}):\n` + output);
 
                                 const evalOutput = new Discord.EmbedBuilder()
-                                    .setColor(client.config_embeds.error)
+                                    .setColor(client.config.embeds.error)
                                     .setTitle("📤 Output")
                                     .setDescription("No output was returned.")
                                     .setTimestamp()
@@ -100,7 +100,7 @@ const event: Event = {
                             console.log(`[eval] [error] ${message.author.tag} (${message.author.id}):\n` + err);
 
                             const evalOutput = new Discord.EmbedBuilder()
-                                .setColor(client.config_embeds.error)
+                                .setColor(client.config.embeds.error)
                                 .setTitle("📤 Output")
                                 .setTimestamp()
 
@@ -121,7 +121,7 @@ const event: Event = {
                         console.error(err);
 
                         const error = new Discord.EmbedBuilder()
-                            .setColor(client.config_embeds.error)
+                            .setColor(client.config.embeds.error)
                             .setTitle("💥 An error occurred")
                             .setDescription(`\`\`\`${err.message}\`\`\``)
                             .addFields (
@@ -136,7 +136,7 @@ const event: Event = {
                 }
 
                 const mention = new Discord.EmbedBuilder()
-                    .setColor(client.config_embeds.default)
+                    .setColor(client.config.embeds.default)
                     .setDescription(`👋 Hello there **${message.author.globalName || message.author.username}**!\n\n👤 My name is **${client.user.username}** and I am a reminder bot.\n⏰ I can remind you of things you need to do, or just send you a message at a certain time!\n\n✨ To get started with me, use the command: </help:${client.commandIds.get("help")}>`)
                     .setTimestamp()
 

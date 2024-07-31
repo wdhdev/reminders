@@ -34,7 +34,7 @@ const command: Command = {
 
             if(!reminder) {
                 const error = new Discord.EmbedBuilder()
-                    .setColor(client.config_embeds.error)
+                    .setColor(client.config.embeds.error)
                     .setDescription(`${emoji.cross} I could not find that reminder!`)
 
                 await interaction.editReply({ embeds: [error] });
@@ -42,7 +42,7 @@ const command: Command = {
             }
 
             const info = new Discord.EmbedBuilder()
-                .setColor(client.config_embeds.default)
+                .setColor(client.config.embeds.default)
                 .setTitle(reminder.reminder_id)
                 .addFields(
                     { name: "Reason", value: reminder.reason },

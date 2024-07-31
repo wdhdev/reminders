@@ -42,7 +42,7 @@ const command: Command = {
             }
 
             const ping = new Discord.EmbedBuilder()
-                .setColor(client.config_embeds.default)
+                .setColor(client.config.embeds.default)
                 .addFields (
                     { name: "Bot Latency", value: botLatencyValue, inline: true },
                     { name: "API Latency", value: apiLatencyValue, inline: true }
