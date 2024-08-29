@@ -50,7 +50,7 @@ const event: Event = {
                         .setFooter({ text: `ID: ${reminder.reminder_id}` })
                         .setTimestamp()
 
-                    if(reminder?.send_in_channel) {
+                    if(reminder?.send_in_channel && reminder?.channel) {
                         try {
                             const channel = client.channels.cache.get(reminder.channel) as Discord.TextChannel;
 
@@ -71,7 +71,7 @@ const event: Event = {
                             await user.send({ embeds: [embed] });
                         } catch {
                             try {
-                                const channel = client.channels.cache.get(reminder.channel) as Discord.TextChannel;
+                                const channel = client.channels.cache.get(reminder?.channel) as Discord.TextChannel;
 
                                 if(!channel) return;
 

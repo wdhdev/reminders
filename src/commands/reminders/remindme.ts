@@ -103,7 +103,7 @@ const command: Command = {
             const reminder = await new Reminder({
                 reminder_id: id,
                 user: interaction.user.id,
-                channel: interaction.channel.id,
+                channel: interaction.channel.id ? interaction.channel.id : null,
                 set: Date.now(),
                 due: Date.now() + time,
                 delay: time,
@@ -127,7 +127,7 @@ const command: Command = {
                         .setTimestamp()
 
                     
-                    if(sendInChannel) {
+                    if(sendInChannel && interaction.channel.id) {
                         try {
                             const channel = client.channels.cache.get(interaction.channel.id) as TextChannel;
 

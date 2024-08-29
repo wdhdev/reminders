@@ -20,7 +20,7 @@ export default async function (reminder: any, client: ExtendedClient): Promise<B
             .setFooter({ text: `ID: ${reminder.reminder_id}` })
             .setTimestamp()
 
-        if(reminder?.send_in_channel) {
+        if(reminder?.send_in_channel && reminder?.channel) {
             try {
                 const channel = client.channels.cache.get(reminder.channel) as Discord.TextChannel;
 
@@ -41,7 +41,7 @@ export default async function (reminder: any, client: ExtendedClient): Promise<B
                 await user.send({ embeds: [embed] });
             } catch {
                 try {
-                    const channel = client.channels.cache.get(reminder.channel) as Discord.TextChannel;
+                    const channel = client.channels.cache.get(reminder?.channel) as Discord.TextChannel;
 
                     if(!channel) return;
 
