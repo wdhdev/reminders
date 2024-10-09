@@ -38,8 +38,6 @@ jobs:
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
-            - run: echo "${{ github.ref_name }}"
-
             - name: Build and Push Image
               uses: docker/build-push-action@v6
               with:
