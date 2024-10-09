@@ -12,7 +12,9 @@ concurrency:
 
 env:
     DOCKER_IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}
+    DOCKER_REGISTRY: docker.io
     GITHUB_IMAGE_NAME: ${{ github.repository }}
+    GITHUB_REGISTRY: ghcr.io
 
 jobs:
     build-and-deploy:
@@ -25,14 +27,14 @@ jobs:
             - name: Login to docker.io
               uses: docker/login-action@v3
               with:
-                  registry: docker.io
+                  registry: ${{ env.DOCKER_REGISTRY }}
                   username: ${{ secrets.DOCKER_USERNAME }}
                   password: ${{ secrets.DOCKER_PASSWORD }}
 
             - name: Login to ghcr.io
               uses: docker/login-action@v3
               with:
-                  registry: ghcr.io
+                  registry: ${{ env.GITHUB_REGISTRY }}
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
