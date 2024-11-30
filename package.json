@@ -1,6 +1,6 @@
 {
   "name": "reminders",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Set reminders for things you need to do.",
   "main": "dist/index.js",
   "scripts": {
@@ -18,14 +18,14 @@
   },
   "homepage": "https://github.com/wdhdev/reminders#readme",
   "dependencies": {
-    "@sentry/node": "^8.25.0",
-    "discord.js": "^14.15.3",
+    "@sentry/node": "^8.41.0",
+    "discord.js": "^14.16.3",
     "dotenv": "^16.4.5",
-    "mongoose": "^8.5.2"
+    "mongoose": "^8.8.3"
   },
   "devDependencies": {
-    "@sentry/types": "^8.25.0",
-    "@types/node": "^22.2.0",
-    "typescript": "^5.5.4"
+    "@sentry/types": "^8.41.0",
+    "@types/node": "^22.10.1",
+    "typescript": "^5.7.2"
   }
 }

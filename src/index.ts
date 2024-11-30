@@ -31,7 +31,7 @@ client.config = config;
 process.on("unhandledRejection", (err: Error) => Sentry.captureException(err));
 
 // Connect to Database
-import database from "./util/database";
+import database from "./lib/mongo";
 database();
 
 // Handlers

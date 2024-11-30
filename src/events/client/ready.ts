@@ -2,7 +2,6 @@ import Event from "../../classes/Event";
 import ExtendedClient from "../../classes/ExtendedClient";
 
 import Discord from "discord.js";
-import { exec } from "child_process";
 import globalCommands from "../../scripts/global-commands";
 import setReminder from "../../util/setReminder";
 
