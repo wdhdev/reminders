@@ -13,7 +13,7 @@ const event: Event = {
     async execute(client: ExtendedClient) {
         try {
             // Login Message
-            console.log(`Logged in as: ${client.user.tag}`);
+            console.log(`Logged in as: ${client.user?.tag}`);
 
             // Register Commands
             await globalCommands(client);
@@ -21,7 +21,7 @@ const event: Event = {
             // Manage timeouts
             async function manageExistingTimeouts() {
                 let reminders = await Reminder.find({});
-                const dueReminders = reminders.filter(reminder => reminder.due <= Date.now().toString());
+                const dueReminders = reminders.filter(reminder => reminder?.due <= Date.now().toString());
 
                 for(const reminder of dueReminders) {
                     await reminder.deleteOne();
@@ -30,10 +30,10 @@ const event: Event = {
                     const embed = new Discord.EmbedBuilder()
                         .setColor(client.config.embeds.default)
                         .setTitle("Overdue Reminder")
-                        .setDescription(reminder.reason)
+                        .setDescription(reminder?.reason)
                         .addFields (
-                            { name: "Set", value: `<t:${reminder.set.toString().slice(0, -3)}:f>`, inline: true },
-                            { name: "Overdue Since", value: `<t:${reminder.due.toString().slice(0, -3)}:R>`, inline: true }
+                            { name: "Set", value: `<t:${reminder.set?.toString().slice(0, -3)}:f>`, inline: true },
+                            { name: "Overdue Since", value: `<t:${reminder.due?.toString().slice(0, -3)}:R>`, inline: true }
                         )
                         .setFooter({ text: `ID: ${reminder.reminder_id}` })
                         .setTimestamp()
@@ -49,14 +49,14 @@ const event: Event = {
                             try {
                                 const user = client.users.cache.get(reminder.user);
 
-                                await user.send({ embeds: [embed] });
+                                await user?.send({ embeds: [embed] });
                             } catch {}
                         }
                     } else {
                         try {
                             const user = client.users.cache.get(reminder.user);
 
-                            await user.send({ embeds: [embed] });
+                            await user?.send({ embeds: [embed] });
                         } catch {
                             try {
                                 const channel = client.channels.cache.get(reminder?.channel) as Discord.TextChannel;

@@ -13,9 +13,9 @@ export default async function (reminder: any, client: ExtendedClient): Promise<B
         const embed = new Discord.EmbedBuilder()
             .setColor(client.config.embeds.default)
             .setTitle("Reminder")
-            .setDescription(reminder.reason)
+            .setDescription(reminder?.reason)
             .addFields (
-                { name: "Set", value: `<t:${reminder.set.toString().slice(0, -3)}:f> (<t:${reminder.set.toString().slice(0, -3)}:R>)` }
+                { name: "Set", value: `<t:${reminder.set?.toString().slice(0, -3)}:f> (<t:${reminder.set?.toString().slice(0, -3)}:R>)` }
             )
             .setFooter({ text: `ID: ${reminder.reminder_id}` })
             .setTimestamp()
@@ -31,14 +31,14 @@ export default async function (reminder: any, client: ExtendedClient): Promise<B
                 try {
                     const user = client.users.cache.get(reminder.user);
 
-                    await user.send({ embeds: [embed] });
+                    await user?.send({ embeds: [embed] });
                 } catch {}
             }
         } else {
             try {
                 const user = client.users.cache.get(reminder.user);
 
-                await user.send({ embeds: [embed] });
+                await user?.send({ embeds: [embed] });
             } catch {
                 try {
                     const channel = client.channels.cache.get(reminder?.channel) as Discord.TextChannel;

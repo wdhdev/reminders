@@ -82,7 +82,7 @@ const command: Command = {
 
             const help = new Discord.EmbedBuilder()
                 .setColor(client.config.embeds.default)
-                .setThumbnail(client.user.displayAvatarURL({ extension: "png", forceStatic: false }))
+                .setThumbnail(client.user?.displayAvatarURL({ extension: "png", forceStatic: false }))
                 .setTitle("Commands")
                 .setDescription(cmds.sort().join("\n"))
                 .setTimestamp()

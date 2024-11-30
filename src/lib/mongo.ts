@@ -4,7 +4,7 @@ import * as Sentry from "@sentry/node";
 require("dotenv").config();
 
 export default async () => {
-    return mongoose.connect(process.env.database).then(() => {
+    return mongoose.connect(process.env.MONGO_URI).then(() => {
         console.log("Connected to Database!");
     }).catch((err: Error) => {
         Sentry.captureException(err);

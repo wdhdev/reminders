@@ -9,7 +9,7 @@ require("dotenv").config();
 export default async function (client: ExtendedClient) {
     const commands: any[] = [];
 
-    const rest = new REST({ version: "9" }).setToken(process.env.token);
+    const rest = new REST({ version: "9" }).setToken(process.env.TOKEN);
 
     // Push Slash Commands
     await pushRoot();
@@ -19,7 +19,7 @@ export default async function (client: ExtendedClient) {
         try {
             console.log("Registering global commands...");
 
-            const applicationCommands: any = await rest.put(Routes.applicationCommands(process.env.clientId), { body: commands });
+            const applicationCommands: any = await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), { body: commands });
 
             for(const command of applicationCommands) {
                 client.commandIds.set(command.name, command.id);

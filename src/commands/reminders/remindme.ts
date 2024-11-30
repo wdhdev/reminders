@@ -43,8 +43,8 @@ const command: Command = {
     ephemeral: true,
     async execute(interaction: ChatInputCommandInteraction, client: ExtendedClient, Discord: typeof import("discord.js")) {
         try {
-            let time: number | string = interaction.options.get("time").value as string;
-            const reason = interaction.options.get("reason").value as string;
+            let time: number | string = interaction.options.get("time")?.value as string;
+            const reason = interaction.options.get("reason")?.value as string;
             const sendInChannel = interaction.options.get("send_in_channel")?.value || false as boolean;
 
             const reminders = await Reminder.find({ user: interaction.user.id });
@@ -103,7 +103,7 @@ const command: Command = {
             const reminder = await new Reminder({
                 reminder_id: id,
                 user: interaction.user.id,
-                channel: interaction.channel.id ? interaction.channel.id : null,
+                channel: interaction.channel?.id ? interaction.channel?.id : null,
                 set: Date.now(),
                 due: Date.now() + time,
                 delay: time,
@@ -121,15 +121,15 @@ const command: Command = {
                         .setTitle("Reminder")
                         .setDescription(reason)
                         .addFields (
-                            { name: "Set", value: `<t:${reminder.set.toString().slice(0, -3)}:f> (<t:${reminder.set.toString().slice(0, -3)}:R>)` }
+                            { name: "Set", value: `<t:${reminder.set?.toString().slice(0, -3)}:f> (<t:${reminder.set?.toString().slice(0, -3)}:R>)` }
                         )
                         .setFooter({ text: `ID: ${reminder.reminder_id}` })
                         .setTimestamp()
 
                     
-                    if(sendInChannel && interaction.channel.id) {
+                    if(sendInChannel && interaction.channel?.id) {
                         try {
-                            const channel = client.channels.cache.get(interaction.channel.id) as TextChannel;
+                            const channel = client.channels.cache.get(interaction.channel?.id) as TextChannel;
 
                             if(!channel) throw "Channel not found.";
 
@@ -143,7 +143,7 @@ const command: Command = {
                         try {
                             await interaction.user.send({ embeds: [embed] });
                         } catch {
-                            const channel = client.channels.cache.get(interaction.channel.id) as TextChannel;
+                            const channel = client.channels.cache.get(interaction.channel?.id) as TextChannel;
 
                             if(!channel) return;
 
@@ -155,7 +155,7 @@ const command: Command = {
 
             const reminderSet = new Discord.EmbedBuilder()
                 .setColor(client.config.embeds.default)
-                .setDescription(`${emoji.tick} Your reminder has been set for <t:${reminder.due.toString().slice(0, -3)}:f> with ID \`${reminder.reminder_id}\`!`)
+                .setDescription(`${emoji.tick} Your reminder has been set for <t:${reminder.due?.toString().slice(0, -3)}:f> with ID \`${reminder.reminder_id}\`!`)
 
             await interaction.editReply({ embeds: [reminderSet] });
         } catch(err) {

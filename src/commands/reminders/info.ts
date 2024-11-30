@@ -28,7 +28,7 @@ const command: Command = {
     ephemeral: true,
     async execute(interaction: ChatInputCommandInteraction, client: ExtendedClient, Discord: typeof import("discord.js")) {
         try {
-            const id = interaction.options.get("id").value as string;
+            const id = interaction.options.get("id")?.value as string;
 
             const reminder = await Reminder.findOne({ reminder_id: id, user: interaction.user.id });
 
@@ -45,9 +45,9 @@ const command: Command = {
                 .setColor(client.config.embeds.default)
                 .setTitle(reminder.reminder_id)
                 .addFields(
-                    { name: "Reason", value: reminder.reason },
-                    { name: "Set", value: `<t:${reminder.set.toString().slice(0, -3)}:f>`, inline: true },
-                    { name: "Due", value: `<t:${reminder.due.toString().slice(0, -3)}:R>`, inline: true }
+                    { name: "Reason", value: reminder?.reason },
+                    { name: "Set", value: `<t:${reminder.set?.toString().slice(0, -3)}:f>`, inline: true },
+                    { name: "Due", value: `<t:${reminder.due?.toString().slice(0, -3)}:R>`, inline: true }
                 )
 
             await interaction.editReply({ embeds: [info] });
@@ -63,7 +63,7 @@ const command: Command = {
             const reminders = await Reminder.find({ user: interaction.user.id });
 
             // Filter reminders
-            const filteredReminders = reminders.filter((reminder) => reminder.reminder_id.startsWith(option.value));
+            const filteredReminders = reminders.filter((reminder) => reminder.reminder_id?.startsWith(option.value));
 
             // Map reminders
             const choices = filteredReminders.map((reminder) => {

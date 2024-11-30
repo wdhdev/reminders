@@ -4,7 +4,7 @@ require("dotenv").config();
 import * as Sentry from "@sentry/node";
 
 Sentry.init({
-    dsn: process.env.sentry_dsn,
+    dsn: process.env.SENTRY_DSN,
     tracesSampleRate: 1.0
 })
 
@@ -31,8 +31,8 @@ client.config = config;
 process.on("unhandledRejection", (err: Error) => Sentry.captureException(err));
 
 // Connect to Database
-import database from "./lib/mongo";
-database();
+import mongo from "./lib/mongo";
+mongo();
 
 // Handlers
 client.commands = new Discord.Collection();
@@ -42,7 +42,7 @@ import { loadHandlers } from "./util/functions";
 loadHandlers(client);
 
 // Login
-client.login(process.env.token);
+client.login(process.env.TOKEN);
 
 // Constants
 client.commandIds = new Discord.Collection();

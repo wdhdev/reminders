@@ -4,7 +4,7 @@ export default class Command {
     public name: string;
     public description: string;
     public options: ApplicationCommandOptionData[];
-    public default_member_permissions: Permissions;
+    public default_member_permissions: Permissions | null;
     public botPermissions: PermissionResolvable[];
     public cooldown: number;
     public enabled: boolean;
