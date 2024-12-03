@@ -21,7 +21,7 @@ const event: Event = {
             // Manage timeouts
             async function manageExistingTimeouts() {
                 let reminders = await Reminder.find({});
-                const dueReminders = reminders.filter(reminder => reminder.reminder_due <= Date.now().toString());
+                const dueReminders = reminders.filter(reminder => (reminder.reminder_set + reminder.delay) <= Date.now().toString());
 
                 for(const reminder of dueReminders) {
                     await reminder.deleteOne();
@@ -33,7 +33,7 @@ const event: Event = {
                         .setDescription(reminder.reason)
                         .addFields (
                             { name: "Set", value: `<t:${reminder.reminder_set.toString().slice(0, -3)}:f>`, inline: true },
-                            { name: "Overdue Since", value: `<t:${reminder.reminder_due.toString().slice(0, -3)}:R>`, inline: true }
+                            { name: "Overdue Since", value: `<t:${(reminder.reminder_set + reminder.delay).toString().slice(0, -3)}:R>`, inline: true }
                         )
                         .setFooter({ text: `ID: ${reminder.reminder_id}` })
                         .setTimestamp()

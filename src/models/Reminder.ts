@@ -21,18 +21,17 @@ function decrypt(text: string): string {
     return decrypted;
 }
 
-interface Reminder extends Document {
+export interface Reminder extends Document {
     reminder_id: string;
     user: string;
     channel?: string;
     delay: number;
     reminder_set: string;
-    reminder_due: string;
     reason: string;
     send_in_channel?: boolean;
 }
 
-const reminderSchema = new Schema<Reminder>(
+const schema = new Schema<Reminder>(
     {
         reminder_id: {
             type: String,
@@ -67,10 +66,6 @@ const reminderSchema = new Schema<Reminder>(
             required: true,
             default: () => Number(Date.now()).toString()
         },
-        reminder_due: {
-            type: String,
-            required: true
-        },
         reason: {
             type: String,
             required: true,
@@ -85,4 +80,4 @@ const reminderSchema = new Schema<Reminder>(
     { timestamps: true }
 );
 
-export default model<Reminder>("reminders", reminderSchema, "reminders");
+export default model<Reminder>("reminders", schema, "reminders");

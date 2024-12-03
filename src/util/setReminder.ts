@@ -2,8 +2,10 @@ import { ColorResolvable, EmbedBuilder, TextChannel } from "discord.js";
 
 import ExtendedClient from "../classes/ExtendedClient";
 
-export default async function (reminder: any, client: ExtendedClient): Promise<Boolean> {
-    const delay = Number(reminder.reminder_due) - Date.now();
+import { Reminder } from "../models/Reminder";
+
+export default async function (reminder: Reminder, client: ExtendedClient): Promise<Boolean> {
+    const delay = Number(reminder.reminder_set + reminder.delay) - Date.now();
 
     if(delay > client.config.reminders.timeTillSet) return false;
 

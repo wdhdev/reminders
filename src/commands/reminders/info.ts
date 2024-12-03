@@ -47,7 +47,7 @@ const command: Command = {
                 .addFields(
                     { name: "Reason", value: reminder.reason },
                     { name: "Set", value: `<t:${reminder.reminder_set.toString().slice(0, -3)}:f>`, inline: true },
-                    { name: "Due", value: `<t:${reminder.reminder_due.toString().slice(0, -3)}:R>`, inline: true }
+                    { name: "Due", value: `<t:${(reminder.reminder_set + reminder.delay).toString().slice(0, -3)}:R>`, inline: true }
                 )
 
             await interaction.editReply({ embeds: [info] });

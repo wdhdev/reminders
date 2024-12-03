@@ -101,7 +101,6 @@ const command: Command = {
                 user: interaction.user.id,
                 channel: interaction.channel?.id ? interaction.channel?.id : null,
                 delay: time,
-                reminder_due: (Date.now() + time).toString(),
                 reason: reason,
                 send_in_channel: sendInChannel
             }).save()
@@ -150,7 +149,7 @@ const command: Command = {
 
             const reminderSet = new Discord.EmbedBuilder()
                 .setColor(client.config.embeds.default as ColorResolvable)
-                .setDescription(`${emoji.tick} Your reminder has been set for <t:${reminder.reminder_due.toString().slice(0, -3)}:f> with ID \`${reminder.reminder_id}\`!`)
+                .setDescription(`${emoji.tick} Your reminder has been set for <t:${(reminder.reminder_set + reminder.delay).toString().slice(0, -3)}:f> with ID \`${reminder.reminder_id}\`!`)
 
             await interaction.editReply({ embeds: [reminderSet] });
         } catch(err) {
