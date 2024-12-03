@@ -39,13 +39,13 @@ const command: Command = {
                 return;
             }
 
-            // Sort reminders by due date
-            reminders = reminders.sort((a: any, b: any) => a.due - b.due);
+            // Sort reminders by when they were set
+            reminders = reminders.sort((a: any, b: any) => Number(a.reminder_set) - Number(b.reminder_set));
 
             const list = new Discord.EmbedBuilder()
                 .setColor(client.config.embeds.default as ColorResolvable)
                 .setTitle("Your Reminders")
-                .setDescription(cap(reminders.map(r => `\`${r.reminder_id}\` (<t:${(r.reminder_set + r.delay).toString().slice(0, -3)}:R>):\n*${!fullReasons ? cap(r.reason, 100): r.reason}*`).join("\n"), 4000))
+                .setDescription(cap(reminders.map(r => `\`${r.reminder_id}\` (<t:${(Number(r.reminder_set) + r.delay).toString().slice(0, -3)}:R>):\n*${!fullReasons ? cap(r.reason, 100): r.reason}*`).join("\n"), 4000))
 
             await interaction.editReply({ embeds: [list] });
         } catch(err) {

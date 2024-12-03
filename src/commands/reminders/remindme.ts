@@ -23,7 +23,7 @@ const command: Command = {
             type: 3,
             name: "reason",
             description: "The reason for the reminder.",
-            max_length: 1000,
+            max_length: 512,
             required: true
         },
 
@@ -31,6 +31,13 @@ const command: Command = {
             type: 5,
             name: "send_in_channel",
             description: "Send the reminder in this channel, instead of in a direct message.",
+            required: false
+        },
+
+        {
+            type: 5,
+            name: "recurring",
+            description: "Set the reminder to automatically repeat.",
             required: false
         }
     ],
@@ -45,6 +52,7 @@ const command: Command = {
             let time: number | string = interaction.options.get("time")?.value as string;
             const reason = interaction.options.get("reason")?.value as string;
             const sendInChannel = interaction.options.get("send_in_channel")?.value || false as boolean;
+            const recurring = interaction.options.get("recurring")?.value || false as boolean;
 
             const reminders = await Reminder.find({ user: interaction.user.id });
 
@@ -102,20 +110,28 @@ const command: Command = {
                 channel: interaction.channel?.id ? interaction.channel?.id : null,
                 delay: time,
                 reason: reason,
-                send_in_channel: sendInChannel
+                send_in_channel: sendInChannel,
+                recurring
             }).save()
 
             if(time < client.config.reminders.timeTillSet) {
                 client.reminders.set(`${interaction.user.id}-${reminder.reminder_id}`, setTimeout(async () => {
                     client.reminders.delete(`${interaction.user.id}-${reminder.reminder_id}`);
-                    await Reminder.findOneAndDelete({ reminder_id: reminder.reminder_id, user: interaction.user.id });
+
+                    if(reminder?.recurring) {
+                        reminder.reminder_set = Date.now().toString();
+                        await reminder.save();
+                    } else {
+                        await reminder.deleteOne();
+                    }
 
                     const embed = new Discord.EmbedBuilder()
                         .setColor(client.config.embeds.default as ColorResolvable)
                         .setTitle("Reminder")
                         .setDescription(reason)
                         .addFields (
-                            { name: "Set", value: `<t:${reminder.reminder_set.toString().slice(0, -3)}:f> (<t:${reminder.reminder_set.toString().slice(0, -3)}:R>)` }
+                            { name: "Set", value: `<t:${reminder.reminder_set.toString().slice(0, -3)}:f> (<t:${reminder.reminder_set.toString().slice(0, -3)}:R>)` },
+                            { name: "Recurring", value: reminder?.recurring ? emoji.tick : emoji.cross }
                         )
                         .setFooter({ text: `ID: ${reminder.reminder_id}` })
                         .setTimestamp()
@@ -149,7 +165,7 @@ const command: Command = {
 
             const reminderSet = new Discord.EmbedBuilder()
                 .setColor(client.config.embeds.default as ColorResolvable)
-                .setDescription(`${emoji.tick} Your reminder has been set for <t:${(reminder.reminder_set + reminder.delay).toString().slice(0, -3)}:f> with ID \`${reminder.reminder_id}\`!`)
+                .setDescription(`${emoji.tick} Your reminder has been set for <t:${(Number(reminder.reminder_set) + reminder.delay).toString().slice(0, -3)}:f> with ID \`${reminder.reminder_id}\`${reminder?.recurring ? " and will recur until cancelled." : "."}`)
 
             await interaction.editReply({ embeds: [reminderSet] });
         } catch(err) {

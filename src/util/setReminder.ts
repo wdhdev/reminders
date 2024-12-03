@@ -5,7 +5,7 @@ import ExtendedClient from "../classes/ExtendedClient";
 import { Reminder } from "../models/Reminder";
 
 export default async function (reminder: Reminder, client: ExtendedClient): Promise<Boolean> {
-    const delay = Number(reminder.reminder_set + reminder.delay) - Date.now();
+    const delay = Number(Number(reminder.reminder_set) + reminder.delay) - Date.now();
 
     if(delay > client.config.reminders.timeTillSet) return false;
 
@@ -23,7 +23,7 @@ export default async function (reminder: Reminder, client: ExtendedClient): Prom
             .setFooter({ text: `ID: ${reminder.reminder_id}` })
             .setTimestamp()
 
-        if(reminder?.send_in_channel && reminder?.channel) {
+        if(reminder?.send_in_channel && reminder.channel) {
             try {
                 const channel = client.channels.cache.get(reminder.channel) as TextChannel;
 

@@ -19,9 +19,9 @@ const event: Event = {
             await globalCommands(client);
 
             // Manage timeouts
-            async function manageExistingTimeouts() {
+            async function manageExistingReminders() {
                 let reminders = await Reminder.find({});
-                const dueReminders = reminders.filter(reminder => (reminder.reminder_set + reminder.delay) <= Date.now().toString());
+                const dueReminders = reminders.filter(reminder => (Number(reminder.reminder_set) + reminder.delay) <= Date.now());
 
                 for(const reminder of dueReminders) {
                     await reminder.deleteOne();
@@ -33,10 +33,14 @@ const event: Event = {
                         .setDescription(reminder.reason)
                         .addFields (
                             { name: "Set", value: `<t:${reminder.reminder_set.toString().slice(0, -3)}:f>`, inline: true },
-                            { name: "Overdue Since", value: `<t:${(reminder.reminder_set + reminder.delay).toString().slice(0, -3)}:R>`, inline: true }
+                            { name: "Overdue Since", value: `<t:${(Number(reminder.reminder_set) + reminder.delay).toString().slice(0, -3)}:R>`, inline: true }
                         )
                         .setFooter({ text: `ID: ${reminder.reminder_id}` })
                         .setTimestamp()
+
+                    const recurring = new EmbedBuilder()
+                        .setColor(client.config.embeds.default as ColorResolvable)
+                        .setDescription("This reminder was a recurring reminder, however since it was sent overdue, it has been reset, you will need to set it again if you want it to continue.")
 
                     if(reminder?.send_in_channel && reminder.channel) {
                         try {
@@ -44,26 +48,26 @@ const event: Event = {
 
                             if(!channel) throw "Channel not found.";
 
-                            await channel.send({ content: `<@${reminder.user}>`, embeds: [embed] });
+                            await channel.send({ content: `<@${reminder.user}>`, embeds: reminder?.recurring ? [embed, recurring] : [embed] });
                         } catch {
                             try {
                                 const user = client.users.cache.get(reminder.user);
 
-                                await user?.send({ embeds: [embed] });
+                                await user?.send({ embeds: reminder?.recurring ? [embed, recurring] : [embed] });
                             } catch {}
                         }
                     } else {
                         try {
                             const user = client.users.cache.get(reminder.user);
 
-                            await user?.send({ embeds: [embed] });
+                            await user?.send({ embeds: reminder?.recurring ? [embed, recurring] : [embed] });
                         } catch {
                             try {
                                 const channel = client.channels.cache.get(reminder.channel) as TextChannel;
 
                                 if(!channel) return;
 
-                                await channel.send({ content: `<@${reminder.user}>`, embeds: [embed] });
+                                await channel.send({ content: `<@${reminder.user}>`, embeds: reminder?.recurring ? [embed, recurring] : [embed] });
                             } catch {}
                         }
                     }
@@ -74,11 +78,11 @@ const event: Event = {
                 }
             }
 
-            manageExistingTimeouts().then(async () => {
+            manageExistingReminders().then(async () => {
                 setInterval(async () => {
                     const reminders = await Reminder.find({});
 
-                    if(reminders.length === 0) return;
+                    if(!reminders.length) return;
 
                     for(const reminder of reminders) {
                         if(client.reminders.get(`${reminder.user}-${reminder.reminder_id}`)) continue;

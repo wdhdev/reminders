@@ -29,6 +29,7 @@ export interface Reminder extends Document {
     reminder_set: string;
     reason: string;
     send_in_channel?: boolean;
+    recurring?: boolean;
 }
 
 const schema = new Schema<Reminder>(
@@ -50,7 +51,7 @@ const schema = new Schema<Reminder>(
         },
         channel: {
             type: String,
-            required: false,
+            required: true,
             set: (value: string) => encrypt(value),
             get: (value: string) => decrypt(value)
         },
@@ -73,6 +74,10 @@ const schema = new Schema<Reminder>(
             get: (value: string) => decrypt(value)
         },
         send_in_channel: {
+            type: Boolean,
+            default: false
+        },
+        recurring: {
             type: Boolean,
             default: false
         }
