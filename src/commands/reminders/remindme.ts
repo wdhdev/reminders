@@ -105,6 +105,15 @@ const command: Command = {
                 return;
             }
 
+            if(recurring && time < day) {
+                const error = new Discord.EmbedBuilder()
+                    .setColor(client.config.embeds.error as ColorResolvable)
+                    .setDescription(`${emoji.cross} Recurring reminders must have a delay of at least 1 day.`)
+
+                await interaction.editReply({ embeds: [error] });
+                return;
+            }
+
             const reminder = await new Reminder({
                 user: interaction.user.id,
                 channel: interaction.channel?.id ? interaction.channel?.id : null,
