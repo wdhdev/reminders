@@ -69,8 +69,7 @@ const reminderSchema = new Schema<Reminder>(
         },
         reminder_due: {
             type: String,
-            required: true,
-            default: (Date.now() + (3600 * 1000)).toString
+            required: true
         },
         reason: {
             type: String,

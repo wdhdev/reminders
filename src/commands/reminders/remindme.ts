@@ -101,6 +101,7 @@ const command: Command = {
                 user: interaction.user.id,
                 channel: interaction.channel?.id ? interaction.channel?.id : null,
                 delay: time,
+                reminder_due: (Date.now() + time).toString(),
                 reason: reason,
                 send_in_channel: sendInChannel
             }).save()
