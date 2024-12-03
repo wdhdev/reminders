@@ -7,6 +7,8 @@ declare global {
             MONGO_URI: string;
             SENTRY_DSN: string;
             TOKEN: string;
+            EXPRESS_ENABLED: boolean;
+            EXPRESS_PORT: number;
         }
     }
 }

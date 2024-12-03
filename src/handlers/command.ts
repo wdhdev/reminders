@@ -1,8 +1,9 @@
 import ExtendedClient from "../classes/ExtendedClient";
-import { CommandInteraction } from "discord.js";
+import { ColorResolvable, CommandInteraction } from "discord.js";
 
 import fs from "fs";
 import { getDirs } from "../util/functions";
+import * as Sentry from "@sentry/node";
 
 export = async (client: ExtendedClient) => {
     async function loadRoot() {
@@ -33,11 +34,11 @@ export = async (client: ExtendedClient) => {
     (await getDirs("./dist/commands")).forEach((dir: String) => loadDir(dir));
 
     client.logCommandError = async function (err: Error, interaction: CommandInteraction, Discord: typeof import("discord.js")) {
-        const id = client.sentry.captureException(err);
+        const id = Sentry.captureException(err);
         console.error(err);
 
         const error = new Discord.EmbedBuilder()
-            .setColor(client.config.embeds.error)
+            .setColor(client.config.embeds.error as ColorResolvable)
             .setTitle("💥 An error occurred")
             .setDescription(`\`\`\`${err.message}\`\`\``)
             .addFields (

@@ -130,4 +130,4 @@ dist
 .pnp.*
 
 # Other
-src/config.ts
+config.json

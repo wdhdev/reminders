@@ -1,6 +1,5 @@
 import { Client, Collection, Snowflake } from "discord.js";
-import config from "../config";
-import * as Sentry from "@sentry/node";
+import config from "../../config.json";
 
 export default class ExtendedClient extends Client {
     public commandIds: Collection<string, Snowflake>;
@@ -11,7 +10,6 @@ export default class ExtendedClient extends Client {
     public logError: Function;
     public maxReminderTime: number;
     public reminders: Map<string, NodeJS.Timeout>;
-    public sentry: typeof Sentry;
     public timeToSet: number;
     public validPermissions: string[];
 }

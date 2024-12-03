@@ -1,8 +1,8 @@
 import Command from "../../classes/Command";
 import ExtendedClient from "../../classes/ExtendedClient";
-import { ChatInputCommandInteraction, TextChannel } from "discord.js";
+import { ChatInputCommandInteraction, ColorResolvable, TextChannel } from "discord.js";
 
-import { emojis as emoji } from "../../config";
+import { emojis as emoji } from "../../../config.json";
 import { randomUUID } from "crypto";
 
 import Reminder from "../../models/Reminder";
@@ -49,10 +49,10 @@ const command: Command = {
 
             const reminders = await Reminder.find({ user: interaction.user.id });
 
-            if(reminders.length >= 10) {
+            if(reminders.length >= client.config.reminders.max) {
                 const error = new Discord.EmbedBuilder()
-                    .setColor(client.config.embeds.error)
-                    .setDescription(`${emoji.cross} You can only have up to 10 active reminders at once!`)
+                    .setColor(client.config.embeds.error as ColorResolvable)
+                    .setDescription(`${emoji.cross} You can only have up to ${client.config.reminders.max} active reminder${client.config.reminders.max === 1 ? "" : "s"} at once!`)
 
                 await interaction.editReply({ embeds: [error] });
                 return;
@@ -64,7 +64,7 @@ const command: Command = {
 
             if(!match) {
                 const error = new Discord.EmbedBuilder()
-                    .setColor(client.config.embeds.error)
+                    .setColor(client.config.embeds.error as ColorResolvable)
                     .setDescription(`${emoji.cross} Invalid time format. Use \`mo\` for months, \`d\` for days, \`h\` for hours, \`m\` for minutes, or \`s\` for seconds.`)
 
                 await interaction.editReply({ embeds: [error] });
@@ -87,11 +87,11 @@ const command: Command = {
 
             time = (months * month) + (days * day) + (hours * hour) + (minutes * minute) + (seconds * second);
 
-            const maxReminderTimeDays = Math.floor(client.config.main.maxReminderTime / (24 * 60 * 60 * 1000));
+            const maxReminderTimeDays = Math.floor(client.config.reminders.maxTime / (24 * 60 * 60 * 1000));
 
-            if(time > client.config.main.maxReminderTime) {
+            if(time > client.config.reminders.maxTime) {
                 const error = new Discord.EmbedBuilder()
-                    .setColor(client.config.embeds.error)
+                    .setColor(client.config.embeds.error as ColorResolvable)
                     .setDescription(`${emoji.cross} Your reminder cannot be more than ${maxReminderTimeDays} day${maxReminderTimeDays === 1 ? "" : "s"} in the future.`)
 
                 await interaction.editReply({ embeds: [error] });
@@ -101,29 +101,29 @@ const command: Command = {
             const id = randomUUID().slice(0, 8) as string;
 
             const reminder = await new Reminder({
-                reminder_id: id,
+                _id: id,
                 user: interaction.user.id,
                 channel: interaction.channel?.id ? interaction.channel?.id : null,
-                set: Date.now(),
-                due: Date.now() + time,
+                reminder_set: (Date.now()).toString(),
+                reminder_due: (Date.now() + time).toString(),
                 delay: time,
                 reason: reason,
                 send_in_channel: sendInChannel
             }).save()
 
-            if(time < client.config.main.timeToSet) {
+            if(time < client.config.reminders.timeTillSet) {
                 client.reminders.set(`${interaction.user.id}-${id}`, setTimeout(async () => {
                     client.reminders.delete(`${interaction.user.id}-${id}`);
-                    await Reminder.findOneAndDelete({ reminder_id: id, user: interaction.user.id });
+                    await Reminder.findOneAndDelete({ _id: id, user: interaction.user.id });
 
                     const embed = new Discord.EmbedBuilder()
-                        .setColor(client.config.embeds.default)
+                        .setColor(client.config.embeds.default as ColorResolvable)
                         .setTitle("Reminder")
                         .setDescription(reason)
                         .addFields (
-                            { name: "Set", value: `<t:${reminder.set?.toString().slice(0, -3)}:f> (<t:${reminder.set?.toString().slice(0, -3)}:R>)` }
+                            { name: "Set", value: `<t:${reminder.reminder_set.toString().slice(0, -3)}:f> (<t:${reminder.reminder_set.toString().slice(0, -3)}:R>)` }
                         )
-                        .setFooter({ text: `ID: ${reminder.reminder_id}` })
+                        .setFooter({ text: `ID: ${reminder._id}` })
                         .setTimestamp()
 
                     
@@ -154,8 +154,8 @@ const command: Command = {
             }
 
             const reminderSet = new Discord.EmbedBuilder()
-                .setColor(client.config.embeds.default)
-                .setDescription(`${emoji.tick} Your reminder has been set for <t:${reminder.due?.toString().slice(0, -3)}:f> with ID \`${reminder.reminder_id}\`!`)
+                .setColor(client.config.embeds.default as ColorResolvable)
+                .setDescription(`${emoji.tick} Your reminder has been set for <t:${reminder.reminder_due.toString().slice(0, -3)}:f> with ID \`${reminder._id}\`!`)
 
             await interaction.editReply({ embeds: [reminderSet] });
         } catch(err) {

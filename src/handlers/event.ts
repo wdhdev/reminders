@@ -2,6 +2,7 @@ import ExtendedClient from "../classes/ExtendedClient";
 
 import fs from "fs";
 import { getDirs } from "../util/functions";
+import * as Sentry from "@sentry/node";
 
 export = async (client: ExtendedClient, Discord: typeof import("discord.js")) => {
     async function loadDir(dir: String) {
@@ -25,7 +26,7 @@ export = async (client: ExtendedClient, Discord: typeof import("discord.js")) =>
     (await getDirs("./dist/events")).forEach((dir: String) => loadDir(dir));
 
     client.logError = async function (err: Error) {
-        client.sentry.captureException(err);
+        Sentry.captureException(err);
         console.error(err);
     }
 

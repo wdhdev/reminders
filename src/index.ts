@@ -1,12 +1,6 @@
-import config from "./config";
+import "./lib/sentry";
+import config from "../config.json";
 require("dotenv").config();
-
-import * as Sentry from "@sentry/node";
-
-Sentry.init({
-    dsn: process.env.SENTRY_DSN,
-    tracesSampleRate: 1.0
-})
 
 import Discord from "discord.js";
 import ExtendedClient from "./classes/ExtendedClient";
@@ -28,6 +22,8 @@ const client = new ExtendedClient({
 client.config = config;
 
 // Error Handling
+import * as Sentry from "@sentry/node";
+
 process.on("unhandledRejection", (err: Error) => Sentry.captureException(err));
 
 // Connect to Database
@@ -44,10 +40,16 @@ loadHandlers(client);
 // Login
 client.login(process.env.TOKEN);
 
+// Health checks
+if (process.env.EXPRESS_ENABLED) {
+    import("./lib/express").then(({ startServer }) => {
+        startServer(process.env.EXPRESS_PORT || 3000);
+    });
+}
+
 // Constants
 client.commandIds = new Discord.Collection();
 client.reminders = new Map();
-client.sentry = Sentry;
 
 client.validPermissions = [
     "CreateInstantInvite",

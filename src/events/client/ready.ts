@@ -1,7 +1,7 @@
 import Event from "../../classes/Event";
 import ExtendedClient from "../../classes/ExtendedClient";
 
-import Discord from "discord.js";
+import { ColorResolvable, EmbedBuilder, TextChannel } from "discord.js";
 import globalCommands from "../../scripts/global-commands";
 import setReminder from "../../util/setReminder";
 
@@ -21,26 +21,26 @@ const event: Event = {
             // Manage timeouts
             async function manageExistingTimeouts() {
                 let reminders = await Reminder.find({});
-                const dueReminders = reminders.filter(reminder => reminder?.due <= Date.now().toString());
+                const dueReminders = reminders.filter(reminder => reminder.reminder_due <= Date.now().toString());
 
                 for(const reminder of dueReminders) {
                     await reminder.deleteOne();
                     reminders = reminders.filter(r => r !== reminder);
 
-                    const embed = new Discord.EmbedBuilder()
-                        .setColor(client.config.embeds.default)
+                    const embed = new EmbedBuilder()
+                        .setColor(client.config.embeds.default as ColorResolvable)
                         .setTitle("Overdue Reminder")
-                        .setDescription(reminder?.reason)
+                        .setDescription(reminder.reason)
                         .addFields (
-                            { name: "Set", value: `<t:${reminder.set?.toString().slice(0, -3)}:f>`, inline: true },
-                            { name: "Overdue Since", value: `<t:${reminder.due?.toString().slice(0, -3)}:R>`, inline: true }
+                            { name: "Set", value: `<t:${reminder.reminder_set.toString().slice(0, -3)}:f>`, inline: true },
+                            { name: "Overdue Since", value: `<t:${reminder.reminder_due.toString().slice(0, -3)}:R>`, inline: true }
                         )
-                        .setFooter({ text: `ID: ${reminder.reminder_id}` })
+                        .setFooter({ text: `ID: ${reminder._id}` })
                         .setTimestamp()
 
-                    if(reminder?.send_in_channel && reminder?.channel) {
+                    if(reminder?.send_in_channel && reminder.channel) {
                         try {
-                            const channel = client.channels.cache.get(reminder.channel) as Discord.TextChannel;
+                            const channel = client.channels.cache.get(reminder.channel) as TextChannel;
 
                             if(!channel) throw "Channel not found.";
 
@@ -59,7 +59,7 @@ const event: Event = {
                             await user?.send({ embeds: [embed] });
                         } catch {
                             try {
-                                const channel = client.channels.cache.get(reminder?.channel) as Discord.TextChannel;
+                                const channel = client.channels.cache.get(reminder.channel) as TextChannel;
 
                                 if(!channel) return;
 
@@ -81,7 +81,7 @@ const event: Event = {
                     if(reminders.length === 0) return;
 
                     for(const reminder of reminders) {
-                        if(client.reminders.get(`${reminder.user}-${reminder.reminder_id}`)) continue;
+                        if(client.reminders.get(`${reminder.user}-${reminder._id}`)) continue;
 
                         await setReminder(reminder, client);
                     }

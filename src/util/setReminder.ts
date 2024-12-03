@@ -1,28 +1,29 @@
-import Discord from "discord.js";
+import { ColorResolvable, EmbedBuilder, TextChannel } from "discord.js";
+
 import ExtendedClient from "../classes/ExtendedClient";
 
 export default async function (reminder: any, client: ExtendedClient): Promise<Boolean> {
-    const delay = Number(reminder.due) - Date.now();
+    const delay = Number(reminder.reminder_due) - Date.now();
 
-    if(delay > client.config.main.timeToSet) return false;
+    if(delay > client.config.reminders.timeTillSet) return false;
 
-    client.reminders.set(`${reminder.user}-${reminder.reminder_id}`, setTimeout(async () => {
+    client.reminders.set(`${reminder.user}-${reminder._id}`, setTimeout(async () => {
         await reminder.deleteOne();
-        client.reminders.delete(`${reminder.user}-${reminder.reminder_id}`);
+        client.reminders.delete(`${reminder.user}-${reminder._id}`);
 
-        const embed = new Discord.EmbedBuilder()
-            .setColor(client.config.embeds.default)
+        const embed = new EmbedBuilder()
+            .setColor(client.config.embeds.default as ColorResolvable)
             .setTitle("Reminder")
-            .setDescription(reminder?.reason)
+            .setDescription(reminder.reason)
             .addFields (
-                { name: "Set", value: `<t:${reminder.set?.toString().slice(0, -3)}:f> (<t:${reminder.set?.toString().slice(0, -3)}:R>)` }
+                { name: "Set", value: `<t:${reminder.reminder_set.toString().slice(0, -3)}:f> (<t:${reminder.reminder_set.toString().slice(0, -3)}:R>)` }
             )
-            .setFooter({ text: `ID: ${reminder.reminder_id}` })
+            .setFooter({ text: `ID: ${reminder._id}` })
             .setTimestamp()
 
         if(reminder?.send_in_channel && reminder?.channel) {
             try {
-                const channel = client.channels.cache.get(reminder.channel) as Discord.TextChannel;
+                const channel = client.channels.cache.get(reminder.channel) as TextChannel;
 
                 if(!channel) throw "Channel not found.";
 
@@ -41,7 +42,7 @@ export default async function (reminder: any, client: ExtendedClient): Promise<B
                 await user?.send({ embeds: [embed] });
             } catch {
                 try {
-                    const channel = client.channels.cache.get(reminder?.channel) as Discord.TextChannel;
+                    const channel = client.channels.cache.get(reminder.channel) as TextChannel;
 
                     if(!channel) return;
 

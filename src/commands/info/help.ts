@@ -1,8 +1,8 @@
 import Command from "../../classes/Command";
 import ExtendedClient from "../../classes/ExtendedClient";
-import { ChatInputCommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction, ColorResolvable } from "discord.js";
 
-import { emojis as emoji } from "../../config";
+import { emojis as emoji } from "../../../config.json";
 import fs from "fs";
 import { getDirs } from "../../util/functions";
 
@@ -81,7 +81,7 @@ const command: Command = {
             }
 
             const help = new Discord.EmbedBuilder()
-                .setColor(client.config.embeds.default)
+                .setColor(client.config.embeds.default as ColorResolvable)
                 .setThumbnail(client.user?.displayAvatarURL({ extension: "png", forceStatic: false }))
                 .setTitle("Commands")
                 .setDescription(cmds.sort().join("\n"))
@@ -98,7 +98,7 @@ const command: Command = {
                 const cooldown = command.cooldown ? `${command.cooldown} second${command.cooldown === 1 ? "" : "s"}` : "None";
 
                 const commandHelp = new Discord.EmbedBuilder()
-                    .setColor(client.config.embeds.default)
+                    .setColor(client.config.embeds.default as ColorResolvable)
                     .setTitle(`Command: ${command.name}`)
                     .addFields (
                         { name: "Description", value: description },

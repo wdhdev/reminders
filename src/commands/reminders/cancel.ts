@@ -1,8 +1,8 @@
 import Command from "../../classes/Command";
 import ExtendedClient from "../../classes/ExtendedClient";
-import { AutocompleteInteraction, ChatInputCommandInteraction } from "discord.js";
+import { AutocompleteInteraction, ChatInputCommandInteraction, ColorResolvable } from "discord.js";
 
-import { emojis as emoji } from "../../config";
+import { emojis as emoji } from "../../../config.json";
 
 import Reminder from "../../models/Reminder";
 
@@ -30,11 +30,11 @@ const command: Command = {
         try {
             const id = interaction.options.get("id")?.value as string;
 
-            const reminder = await Reminder.findOne({ reminder_id: id, user: interaction.user.id });
+            const reminder = await Reminder.findOne({ _id: id, user: interaction.user.id });
 
             if(!reminder) {
                 const error = new Discord.EmbedBuilder()
-                    .setColor(client.config.embeds.error)
+                    .setColor(client.config.embeds.error as ColorResolvable)
                     .setDescription(`${emoji.cross} I could not find that reminder!`)
 
                 await interaction.editReply({ embeds: [error] });
@@ -50,7 +50,7 @@ const command: Command = {
             await reminder.deleteOne();
 
             const cancelled = new Discord.EmbedBuilder()
-                .setColor(client.config.embeds.default)
+                .setColor(client.config.embeds.default as ColorResolvable)
                 .setDescription(`${emoji.tick} The reminder \`${id}\` has been cancelled!`)
 
             await interaction.editReply({ embeds: [cancelled] });
@@ -66,13 +66,13 @@ const command: Command = {
             const reminders = await Reminder.find({ user: interaction.user.id });
 
             // Filter reminders
-            const filteredReminders = reminders.filter((reminder) => reminder.reminder_id?.startsWith(option.value));
+            const filteredReminders = reminders.filter((reminder) => reminder._id.startsWith(option.value));
 
             // Map reminders
             const choices = filteredReminders.map((reminder) => {
                 return {
-                    name: reminder.reminder_id,
-                    value: reminder.reminder_id
+                    name: reminder._id,
+                    value: reminder._id
                 }
             })
 

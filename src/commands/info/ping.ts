@@ -1,8 +1,8 @@
 import Command from "../../classes/Command";
 import ExtendedClient from "../../classes/ExtendedClient";
-import { ChatInputCommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction, ColorResolvable } from "discord.js";
 
-import { emojis as emoji } from "../../config";
+import { emojis as emoji } from "../../../config.json";
 
 const command: Command = {
     name: "ping",
@@ -42,7 +42,7 @@ const command: Command = {
             }
 
             const ping = new Discord.EmbedBuilder()
-                .setColor(client.config.embeds.default)
+                .setColor(client.config.embeds.default as ColorResolvable)
                 .addFields (
                     { name: "Bot Latency", value: botLatencyValue, inline: true },
                     { name: "API Latency", value: apiLatencyValue, inline: true }

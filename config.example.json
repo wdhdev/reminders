@@ -1,0 +1,24 @@
+{
+    "embeds": {
+        "default": "#0096FF",
+        "error": "#E74C3C"
+    },
+    "emojis": {
+        "connection_bad": "",
+        "connection_excellent": "",
+        "connection_good": "",
+        "cross": "",
+        "ping": "",
+        "reply": "",
+        "tick": ""
+    },
+    "main": {
+        "owners": []
+    },
+    "reminders": {
+        "maxReminders": 10,
+        "__COMMENT__": "All times are in milliseconds",
+        "maxTime": 31536000000,
+        "timeTillSet": 300000
+    }
+}

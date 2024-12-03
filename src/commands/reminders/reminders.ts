@@ -1,9 +1,9 @@
 import Command from "../../classes/Command";
 import ExtendedClient from "../../classes/ExtendedClient";
-import { ChatInputCommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction, ColorResolvable } from "discord.js";
 
 import cap from "../../util/cap";
-import { emojis as emoji } from "../../config";
+import { emojis as emoji } from "../../../config.json";
 
 import Reminder from "../../models/Reminder";
 
@@ -32,7 +32,7 @@ const command: Command = {
 
             if(!reminders.length) {
                 const error = new Discord.EmbedBuilder()
-                    .setColor(client.config.embeds.error)
+                    .setColor(client.config.embeds.error as ColorResolvable)
                     .setDescription(`${emoji.cross} You do not have any reminders set.`)
 
                 await interaction.editReply({ embeds: [error] });
@@ -43,9 +43,9 @@ const command: Command = {
             reminders = reminders.sort((a: any, b: any) => a.due - b.due);
 
             const list = new Discord.EmbedBuilder()
-                .setColor(client.config.embeds.default)
+                .setColor(client.config.embeds.default as ColorResolvable)
                 .setTitle("Your Reminders")
-                .setDescription(cap(reminders.map(r => `\`${r.reminder_id}\` (<t:${r.due?.toString().slice(0, -3)}:R>):\n*${!fullReasons ? cap(r.reason, 100): r.reason}*`).join("\n"), 4000))
+                .setDescription(cap(reminders.map(r => `\`${r._id}\` (<t:${r.reminder_due.toString().slice(0, -3)}:R>):\n*${!fullReasons ? cap(r.reason, 100): r.reason}*`).join("\n"), 4000))
 
             await interaction.editReply({ embeds: [list] });
         } catch(err) {

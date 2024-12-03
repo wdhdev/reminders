@@ -3,6 +3,7 @@ import { REST, Routes } from "discord.js";
 
 import fs from "fs";
 import { getDirs } from "../util/functions";
+import * as Sentry from "@sentry/node";
 
 require("dotenv").config();
 
@@ -27,7 +28,7 @@ export default async function (client: ExtendedClient) {
 
             console.log("Registered global commands!");
         } catch(err) {
-            client.sentry.captureException(err);
+            Sentry.captureException(err);
             console.error(err);
 
             console.error("Failed to register global commands!");

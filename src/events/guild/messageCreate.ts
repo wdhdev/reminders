@@ -1,6 +1,6 @@
 import Event from "../../classes/Event";
 import ExtendedClient from "../../classes/ExtendedClient";
-import { Message, PermissionResolvable } from "discord.js";
+import { ColorResolvable, Message, PermissionResolvable } from "discord.js";
 
 const event: Event = {
     name: "messageCreate",
@@ -16,7 +16,7 @@ const event: Event = {
 
             if(message.content.startsWith(`<@!${client.user?.id}>`) || message.content.startsWith(`<@${client.user?.id}>`)) {
                 const mention = new Discord.EmbedBuilder()
-                    .setColor(client.config.embeds.default)
+                    .setColor(client.config.embeds.default as ColorResolvable)
                     .setDescription(`👋 Hello there **${message.author.globalName || message.author.username}**!\n\n👤 My name is **${client.user?.username}** and I am a reminder bot.\n⏰ I can remind you of things you need to do, or just send you a message at a certain time!\n\n✨ To get started with me, use the command: </help:${client.commandIds.get("help")}>`)
                     .setTimestamp()
 
