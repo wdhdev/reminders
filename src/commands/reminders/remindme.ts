@@ -3,7 +3,6 @@ import ExtendedClient from "../../classes/ExtendedClient";
 import { ChatInputCommandInteraction, ColorResolvable, TextChannel } from "discord.js";
 
 import { emojis as emoji } from "../../../config.json";
-import { randomUUID } from "crypto";
 
 import Reminder from "../../models/Reminder";
 
@@ -98,23 +97,18 @@ const command: Command = {
                 return;
             }
 
-            const id = randomUUID().slice(0, 8) as string;
-
             const reminder = await new Reminder({
-                reminder_id: id,
                 user: interaction.user.id,
                 channel: interaction.channel?.id ? interaction.channel?.id : null,
-                reminder_set: (Date.now()).toString(),
-                reminder_due: (Date.now() + time).toString(),
                 delay: time,
                 reason: reason,
                 send_in_channel: sendInChannel
             }).save()
 
             if(time < client.config.reminders.timeTillSet) {
-                client.reminders.set(`${interaction.user.id}-${id}`, setTimeout(async () => {
-                    client.reminders.delete(`${interaction.user.id}-${id}`);
-                    await Reminder.findOneAndDelete({ reminder_id: id, user: interaction.user.id });
+                client.reminders.set(`${interaction.user.id}-${reminder.reminder_id}`, setTimeout(async () => {
+                    client.reminders.delete(`${interaction.user.id}-${reminder.reminder_id}`);
+                    await Reminder.findOneAndDelete({ reminder_id: reminder.reminder_id, user: interaction.user.id });
 
                     const embed = new Discord.EmbedBuilder()
                         .setColor(client.config.embeds.default as ColorResolvable)

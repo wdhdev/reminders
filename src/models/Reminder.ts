@@ -38,7 +38,10 @@ const reminderSchema = new Schema<Reminder>(
             type: String,
             required: true,
             unique: true,
-            index: true
+            index: true,
+            default: () => crypto.randomBytes(4).toString("hex"),
+            set: (value: string) => encrypt(value),
+            get: (value: string) => decrypt(value)
         },
         user: {
             type: String,
