@@ -16,7 +16,7 @@
         "owners": []
     },
     "reminders": {
-        "maxReminders": 10,
+        "max": 10,
         "__COMMENT__": "All times are in milliseconds",
         "maxTime": 31536000000,
         "timeTillSet": 300000
