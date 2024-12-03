@@ -20,7 +20,7 @@
   "dependencies": {
     "@sentry/node": "^8.42.0",
     "discord.js": "^14.16.3",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.4.6",
     "express": "^4.21.1",
     "mongoose": "^8.8.3"
   },
