@@ -65,7 +65,7 @@ const reminderSchema = new Schema<Reminder>(
         reminder_set: {
             type: String,
             required: true,
-            default: Date.now().toString
+            default: () => Number(Date.now()).toString()
         },
         reminder_due: {
             type: String,
