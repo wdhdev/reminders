@@ -101,7 +101,7 @@ const command: Command = {
             const id = randomUUID().slice(0, 8) as string;
 
             const reminder = await new Reminder({
-                _id: id,
+                reminder_id: id,
                 user: interaction.user.id,
                 channel: interaction.channel?.id ? interaction.channel?.id : null,
                 reminder_set: (Date.now()).toString(),
@@ -114,7 +114,7 @@ const command: Command = {
             if(time < client.config.reminders.timeTillSet) {
                 client.reminders.set(`${interaction.user.id}-${id}`, setTimeout(async () => {
                     client.reminders.delete(`${interaction.user.id}-${id}`);
-                    await Reminder.findOneAndDelete({ _id: id, user: interaction.user.id });
+                    await Reminder.findOneAndDelete({ reminder_id: id, user: interaction.user.id });
 
                     const embed = new Discord.EmbedBuilder()
                         .setColor(client.config.embeds.default as ColorResolvable)
