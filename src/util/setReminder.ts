@@ -7,9 +7,9 @@ export default async function (reminder: any, client: ExtendedClient): Promise<B
 
     if(delay > client.config.reminders.timeTillSet) return false;
 
-    client.reminders.set(`${reminder.user}-${reminder._id}`, setTimeout(async () => {
+    client.reminders.set(`${reminder.user}-${reminder.reminder_id}`, setTimeout(async () => {
         await reminder.deleteOne();
-        client.reminders.delete(`${reminder.user}-${reminder._id}`);
+        client.reminders.delete(`${reminder.user}-${reminder.reminder_id}`);
 
         const embed = new EmbedBuilder()
             .setColor(client.config.embeds.default as ColorResolvable)
@@ -18,7 +18,7 @@ export default async function (reminder: any, client: ExtendedClient): Promise<B
             .addFields (
                 { name: "Set", value: `<t:${reminder.reminder_set.toString().slice(0, -3)}:f> (<t:${reminder.reminder_set.toString().slice(0, -3)}:R>)` }
             )
-            .setFooter({ text: `ID: ${reminder._id}` })
+            .setFooter({ text: `ID: ${reminder.reminder_id}` })
             .setTimestamp()
 
         if(reminder?.send_in_channel && reminder?.channel) {

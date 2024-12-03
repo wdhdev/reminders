@@ -22,7 +22,7 @@ function decrypt(text: string): string {
 }
 
 interface Reminder extends Document {
-    _id: string;
+    reminder_id: string;
     user: string;
     channel?: string;
     delay: number;
@@ -34,13 +34,11 @@ interface Reminder extends Document {
 
 const reminderSchema = new Schema<Reminder>(
     {
-        _id: {
+        reminder_id: {
             type: String,
             required: true,
             unique: true,
-            index: true,
-            set: (value: string) => encrypt(value),
-            get: (value: string) => decrypt(value)
+            index: true
         },
         user: {
             type: String,

@@ -35,7 +35,7 @@ const event: Event = {
                             { name: "Set", value: `<t:${reminder.reminder_set.toString().slice(0, -3)}:f>`, inline: true },
                             { name: "Overdue Since", value: `<t:${reminder.reminder_due.toString().slice(0, -3)}:R>`, inline: true }
                         )
-                        .setFooter({ text: `ID: ${reminder._id}` })
+                        .setFooter({ text: `ID: ${reminder.reminder_id}` })
                         .setTimestamp()
 
                     if(reminder?.send_in_channel && reminder.channel) {
@@ -81,7 +81,7 @@ const event: Event = {
                     if(reminders.length === 0) return;
 
                     for(const reminder of reminders) {
-                        if(client.reminders.get(`${reminder.user}-${reminder._id}`)) continue;
+                        if(client.reminders.get(`${reminder.user}-${reminder.reminder_id}`)) continue;
 
                         await setReminder(reminder, client);
                     }
