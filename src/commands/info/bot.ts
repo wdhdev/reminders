@@ -21,13 +21,13 @@ const command: Command = {
             const info = new Discord.EmbedBuilder()
                 .setColor(client.config.embeds.default as ColorResolvable)
                 .setAuthor({ name: client.user?.tag, iconURL: client.user?.displayAvatarURL({ extension: "png", forceStatic: false }), url: `https://discord.com/users/${client.user?.id}` })
-                .setDescription(bot.description)
-                .addFields (
-                    { name: "📈 Version", value: bot.version, inline: true },
-                    { name: "🟢 Online Since", value: `<t:${(Date.now() - client?.uptime).toString().slice(0, -3)}:f>`, inline: true },
-                    { name: "🤖 Shard ID", value: `${client.shard.ids[0]}` },
-                    { name: "📊 Guild Count", value: `**${guildCount}** (on this shard: ${client.guilds.cache.size})`, inline: true }
-                )
+                .setDescription(`
+${bot.description}\n\n
+📈 **Version**: ${bot.version}
+🟢 **Online Since**: <t:${(Date.now() - client?.uptime).toString().slice(0, -3)}:f>
+🤖 **Shard ID**: #${client.shard.ids[0]}
+📊 **Guild Count**: ${guildCount} (this shard: ${client.guilds.cache.size})
+                `)
 
             const buttons: any = new Discord.ActionRowBuilder()
                 .addComponents (

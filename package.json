@@ -1,6 +1,6 @@
 {
   "name": "reminders",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Set reminders for things you need to do.",
   "main": "dist/sharding.js",
   "scripts": {
