@@ -1,6 +1,6 @@
 import { ShardingManager } from "discord.js";
 
-const manager = new ShardingManager("./index.js", {
+const manager = new ShardingManager("dist/index.js", {
     token: process.env.TOKEN,
     totalShards: 2
 })
