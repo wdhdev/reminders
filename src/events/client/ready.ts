@@ -16,12 +16,17 @@ const event: Event = {
             console.log(`Logged in as: ${client.user?.tag}`);
 
             // Register Commands
-            await globalCommands(client);
+            if (client.shard.ids[0] === 0) {
+                await globalCommands(client);
+            }
 
             // Manage timeouts
             async function manageExistingReminders() {
                 let reminders = await Reminder.find({});
-                const dueReminders = reminders.filter(reminder => (Number(reminder.reminder_set) + reminder.delay) <= Date.now());
+                const dueReminders = reminders
+                    .filter(reminder => (Number(reminder.reminder_set) + reminder.delay) <= Date.now())
+                    // Filter out reminders that are in a channel that the bot can't see
+                    .filter(reminder => client.channels.cache.has(reminder.channel));
 
                 for(const reminder of dueReminders) {
                     await reminder.deleteOne();
@@ -80,7 +85,7 @@ const event: Event = {
 
             manageExistingReminders().then(async () => {
                 setInterval(async () => {
-                    const reminders = await Reminder.find({});
+                    const reminders = (await Reminder.find({})).filter(reminder => client.channels.cache.has(reminder.channel));
 
                     if(!reminders.length) return;
 
