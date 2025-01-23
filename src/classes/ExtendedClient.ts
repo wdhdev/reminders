@@ -8,8 +8,6 @@ export default class ExtendedClient extends Client {
     public events: Collection<string, any>;
     public logCommandError: Function;
     public logError: Function;
-    public maxReminderTime: number;
     public reminders: Map<string, NodeJS.Timeout>;
-    public timeToSet: number;
     public validPermissions: string[];
 }

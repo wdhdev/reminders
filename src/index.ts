@@ -40,13 +40,6 @@ loadHandlers(client);
 // Login
 client.login(process.env.TOKEN);
 
-// Health checks
-if (process.env.EXPRESS_ENABLED) {
-    import("./lib/express").then(({ startServer }) => {
-        startServer(process.env.EXPRESS_PORT || 3000);
-    });
-}
-
 // Constants
 client.commandIds = new Discord.Collection();
 client.reminders = new Map();
