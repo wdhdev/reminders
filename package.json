@@ -2,10 +2,10 @@
   "name": "reminders",
   "version": "1.5.0",
   "description": "Set reminders for things you need to do.",
-  "main": "dist/index.js",
+  "main": "dist/sharding.js",
   "scripts": {
     "build": "npx tsc",
-    "start": "npm run build && node dist/index.js"
+    "start": "npm run build && node dist/sharding.js"
   },
   "repository": {
     "type": "git",
