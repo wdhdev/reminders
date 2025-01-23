@@ -22,7 +22,8 @@ const command: Command = {
                 .setColor(client.config.embeds.default as ColorResolvable)
                 .setAuthor({ name: client.user?.tag, iconURL: client.user?.displayAvatarURL({ extension: "png", forceStatic: false }), url: `https://discord.com/users/${client.user?.id}` })
                 .setDescription(`
-${bot.description}\n\n
+${bot.description}
+
 📈 **Version**: ${bot.version}
 🟢 **Online Since**: <t:${(Date.now() - client?.uptime).toString().slice(0, -3)}:f>
 🤖 **Shard ID**: #${client.shard.ids[0]}
