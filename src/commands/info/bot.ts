@@ -16,6 +16,8 @@ const command: Command = {
     ephemeral: true,
     async execute(interaction: ChatInputCommandInteraction, client: ExtendedClient, Discord: typeof import("discord.js")) {
         try {
+            const guildCount = (await client.shard.fetchClientValues("guilds.cache.size")).reduce((acc: number, gc: number) => acc + gc, 0);
+
             const info = new Discord.EmbedBuilder()
                 .setColor(client.config.embeds.default as ColorResolvable)
                 .setAuthor({ name: client.user?.tag, iconURL: client.user?.displayAvatarURL({ extension: "png", forceStatic: false }), url: `https://discord.com/users/${client.user?.id}` })
@@ -23,7 +25,8 @@ const command: Command = {
                 .addFields (
                     { name: "📈 Version", value: bot.version, inline: true },
                     { name: "🟢 Online Since", value: `<t:${(Date.now() - client?.uptime).toString().slice(0, -3)}:f>`, inline: true },
-                    { name: "📊 Guild Count", value: `${client.guilds.cache.size}`, inline: true }
+                    { name: "🤖 Shard ID", value: `${client.shard.ids[0]}` },
+                    { name: "📊 Guild Count", value: `**${guildCount}** (on this shard: ${client.guilds.cache.size})`, inline: true }
                 )
 
             const buttons: any = new Discord.ActionRowBuilder()
