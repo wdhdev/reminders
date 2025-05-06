@@ -12,5 +12,5 @@
             ]
         }
     ],
-    "rangeStrategy": "bump"
+    "rangeStrategy": "pin"
 }
