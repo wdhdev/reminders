@@ -24,7 +24,7 @@
     "mongoose": "8.14.1"
   },
   "devDependencies": {
-    "@sentry/types": "8.55.0",
+    "@sentry/types": "9.15.0",
     "@types/node": "22.15.12",
     "typescript": "5.8.3"
   }
