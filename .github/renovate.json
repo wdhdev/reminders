@@ -11,5 +11,6 @@
                 "patch"
             ]
         }
-    ]
+    ],
+    "rangeStrategy": "pin"
 }
