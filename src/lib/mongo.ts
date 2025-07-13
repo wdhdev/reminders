@@ -5,7 +5,9 @@ require("dotenv").config();
 
 export default async () => {
     return mongoose
-        .connect(process.env.MONGO_URI, { dbName: process.env.DEVELOPMENT ? "reminders-dev" : "reminders-prod" })
+        .connect(process.env.MONGO_URI, {
+            dbName: process.env.DEVELOPMENT ? "reminders-dev" : "reminders-prod"
+        })
         .then(() => {
             console.log("Connected to Database!");
         })

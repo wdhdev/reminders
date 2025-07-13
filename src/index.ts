@@ -16,7 +16,7 @@ const client = new ExtendedClient({
         ],
         status: "online"
     }
-})
+});
 
 // Config
 client.config = config;
@@ -91,4 +91,4 @@ client.validPermissions = [
     "SendVoiceMessages",
     "SendPolls",
     "UseExternalApps"
-]
+];

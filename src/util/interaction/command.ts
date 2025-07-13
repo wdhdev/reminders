@@ -42,7 +42,10 @@ export = async (
                     .setColor(client.config.embeds.error as ColorResolvable)
                     .setDescription(`I am missing these permissions: \`${invalidPerms.join("`, `")}\``);
 
-                await interaction.reply({ embeds: [permError], ephemeral: true });
+                await interaction.reply({
+                    embeds: [permError],
+                    ephemeral: true
+                });
                 return;
             }
         }
@@ -75,7 +78,10 @@ export = async (
 
                 command.deferReply
                     ? await interaction.editReply({ embeds: [error] })
-                    : await interaction.reply({ embeds: [error], ephemeral: true });
+                    : await interaction.reply({
+                          embeds: [error],
+                          ephemeral: true
+                      });
                 return;
             }
         }
@@ -102,7 +108,10 @@ export = async (
 
                 command.deferReply
                     ? await interaction.editReply({ embeds: [cooldown] })
-                    : await interaction.reply({ embeds: [cooldown], ephemeral: true });
+                    : await interaction.reply({
+                          embeds: [cooldown],
+                          ephemeral: true
+                      });
                 return;
             }
         }

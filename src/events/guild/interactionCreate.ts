@@ -13,18 +13,18 @@ const event: Event = {
             const requiredPerms: PermissionResolvable = ["SendMessages", "EmbedLinks"];
 
             // Ignore interactions not in a guild
-            if(!interaction.guild || !interaction.guild?.id) return;
+            if (!interaction.guild || !interaction.guild?.id) return;
             // Ignore interactions if the bot does not have the required permissions
-            if(!interaction.guild?.members.me?.permissions.has(requiredPerms)) return;
+            if (!interaction.guild?.members.me?.permissions.has(requiredPerms)) return;
 
             // Autocomplete handler
-            if(interaction.isAutocomplete()) return await autocompleteHandler(client, interaction);
+            if (interaction.isAutocomplete()) return await autocompleteHandler(client, interaction);
             // Command handler
-            if(interaction.isChatInputCommand()) return await commandHandler(client, Discord, interaction);
-        } catch(err) {
+            if (interaction.isChatInputCommand()) return await commandHandler(client, Discord, interaction);
+        } catch (err) {
             client.logError(err);
         }
     }
-}
+};
 
 export = event;

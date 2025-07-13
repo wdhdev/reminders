@@ -8,14 +8,14 @@ export = async (client: ExtendedClient, Discord: typeof import("discord.js")) =>
     async function loadDir(dir: String) {
         const files = fs.readdirSync(`./dist/events/${dir}`).filter((file: String) => file.endsWith(".js"));
 
-        for(const file of files) {
+        for (const file of files) {
             const event = require(`../events/${dir}/${file}`);
 
             client.events.set(event.name, event);
 
             console.log(`Loaded Event: ${event.name}`);
 
-            if(event.once) {
+            if (event.once) {
                 client.once(event.name, (message) => event.execute(client, Discord, message));
             } else {
                 client.on(event.name, (message) => event.execute(client, Discord, message));
@@ -28,7 +28,7 @@ export = async (client: ExtendedClient, Discord: typeof import("discord.js")) =>
     client.logError = async function (err: Error) {
         Sentry.captureException(err);
         console.error(err);
-    }
+    };
 
     require("dotenv").config();
-}
+};

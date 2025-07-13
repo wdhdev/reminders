@@ -26,16 +26,23 @@ const command: Command = {
     enabled: true,
     deferReply: true,
     ephemeral: true,
-    async execute(interaction: ChatInputCommandInteraction, client: ExtendedClient, Discord: typeof import("discord.js")) {
+    async execute(
+        interaction: ChatInputCommandInteraction,
+        client: ExtendedClient,
+        Discord: typeof import("discord.js")
+    ) {
         try {
             const id = interaction.options.get("id")?.value as string;
 
-            const reminder = await Reminder.findOne({ reminder_id: id, user: interaction.user.id });
+            const reminder = await Reminder.findOne({
+                reminder_id: id,
+                user: interaction.user.id
+            });
 
-            if(!reminder) {
+            if (!reminder) {
                 const error = new Discord.EmbedBuilder()
                     .setColor(client.config.embeds.error as ColorResolvable)
-                    .setDescription(`${emoji.cross} I could not find that reminder!`)
+                    .setDescription(`${emoji.cross} I could not find that reminder!`);
 
                 await interaction.editReply({ embeds: [error] });
                 return;
@@ -51,19 +58,21 @@ const command: Command = {
 
             const cancelled = new Discord.EmbedBuilder()
                 .setColor(client.config.embeds.default as ColorResolvable)
-                .setDescription(`${emoji.tick} The reminder \`${id}\` has been cancelled!`)
+                .setDescription(`${emoji.tick} The reminder \`${id}\` has been cancelled!`);
 
             await interaction.editReply({ embeds: [cancelled] });
-        } catch(err) {
+        } catch (err) {
             client.logCommandError(err, interaction, Discord);
         }
     },
     async autocomplete(interaction: AutocompleteInteraction, client: ExtendedClient) {
         const option = interaction.options.getFocused(true);
 
-        if(option.name === "id") {
+        if (option.name === "id") {
             // Fetch user's reminders
-            const reminders = await Reminder.find({ user: interaction.user.id });
+            const reminders = await Reminder.find({
+                user: interaction.user.id
+            });
 
             // Filter reminders
             const filteredReminders = reminders.filter((reminder) => reminder.reminder_id.startsWith(option.value));
@@ -73,13 +82,13 @@ const command: Command = {
                 return {
                     name: reminder.reminder_id,
                     value: reminder.reminder_id
-                }
-            })
+                };
+            });
 
             // Set options
             await interaction.respond(choices);
         }
     }
-}
+};
 
 export = command;

@@ -26,16 +26,23 @@ const command: Command = {
     enabled: true,
     deferReply: true,
     ephemeral: true,
-    async execute(interaction: ChatInputCommandInteraction, client: ExtendedClient, Discord: typeof import("discord.js")) {
+    async execute(
+        interaction: ChatInputCommandInteraction,
+        client: ExtendedClient,
+        Discord: typeof import("discord.js")
+    ) {
         try {
             const id = interaction.options.get("id")?.value as string;
 
-            const reminder = await Reminder.findOne({ reminder_id: id, user: interaction.user.id });
+            const reminder = await Reminder.findOne({
+                reminder_id: id,
+                user: interaction.user.id
+            });
 
-            if(!reminder) {
+            if (!reminder) {
                 const error = new Discord.EmbedBuilder()
                     .setColor(client.config.embeds.error as ColorResolvable)
-                    .setDescription(`${emoji.cross} I could not find that reminder!`)
+                    .setDescription(`${emoji.cross} I could not find that reminder!`);
 
                 await interaction.editReply({ embeds: [error] });
                 return;
@@ -46,22 +53,36 @@ const command: Command = {
                 .setTitle(reminder.reminder_id)
                 .addFields(
                     { name: "Reason", value: reminder.reason },
-                    { name: "Set", value: `<t:${reminder.reminder_set.toString().slice(0, -3)}:f>`, inline: true },
-                    { name: "Due", value: `<t:${(Number(reminder.reminder_set) + reminder.delay).toString().slice(0, -3)}:R>`, inline: true },
-                    { name: "Recurring", value: reminder?.recurring ? emoji.tick : emoji.cross, inline: true }
-                )
+                    {
+                        name: "Set",
+                        value: `<t:${reminder.reminder_set.toString().slice(0, -3)}:f>`,
+                        inline: true
+                    },
+                    {
+                        name: "Due",
+                        value: `<t:${(Number(reminder.reminder_set) + reminder.delay).toString().slice(0, -3)}:R>`,
+                        inline: true
+                    },
+                    {
+                        name: "Recurring",
+                        value: reminder?.recurring ? emoji.tick : emoji.cross,
+                        inline: true
+                    }
+                );
 
             await interaction.editReply({ embeds: [info] });
-        } catch(err) {
+        } catch (err) {
             client.logCommandError(err, interaction, Discord);
         }
     },
     async autocomplete(interaction: AutocompleteInteraction, client: ExtendedClient) {
         const option = interaction.options.getFocused(true);
 
-        if(option.name === "id") {
+        if (option.name === "id") {
             // Fetch user's reminders
-            const reminders = await Reminder.find({ user: interaction.user.id });
+            const reminders = await Reminder.find({
+                user: interaction.user.id
+            });
 
             // Filter reminders
             const filteredReminders = reminders.filter((reminder) => reminder.reminder_id.startsWith(option.value));
@@ -71,13 +92,13 @@ const command: Command = {
                 return {
                     name: reminder.reminder_id,
                     value: reminder.reminder_id
-                }
-            })
+                };
+            });
 
             // Set options
             await interaction.respond(choices);
         }
     }
-}
+};
 
 export = command;

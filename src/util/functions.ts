@@ -12,7 +12,7 @@ export async function getDirs(path: string) {
 export function loadHandlers(client: ExtendedClient): void {
     const handlers = fs.readdirSync("./dist/handlers").filter((file: String) => file.endsWith(".js"));
 
-    for(const file of handlers) {
+    for (const file of handlers) {
         require(`../handlers/${file}`)(client, Discord);
     }
 }

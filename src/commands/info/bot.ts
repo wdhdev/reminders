@@ -14,54 +14,69 @@ const command: Command = {
     enabled: true,
     deferReply: true,
     ephemeral: true,
-    async execute(interaction: ChatInputCommandInteraction, client: ExtendedClient, Discord: typeof import("discord.js")) {
+    async execute(
+        interaction: ChatInputCommandInteraction,
+        client: ExtendedClient,
+        Discord: typeof import("discord.js")
+    ) {
         try {
-            const guildCount = (await client.shard.fetchClientValues("guilds.cache.size")).reduce((acc: number, gc: number) => acc + gc, 0);
+            const guildCount = (await client.shard.fetchClientValues("guilds.cache.size")).reduce(
+                (acc: number, gc: number) => acc + gc,
+                0
+            );
 
             const info = new Discord.EmbedBuilder()
                 .setColor(client.config.embeds.default as ColorResolvable)
-                .setAuthor({ name: client.user?.tag, iconURL: client.user?.displayAvatarURL({ extension: "png", forceStatic: false }), url: `https://discord.com/users/${client.user?.id}` })
-                .setDescription(`
+                .setAuthor({
+                    name: client.user?.tag,
+                    iconURL: client.user?.displayAvatarURL({
+                        extension: "png",
+                        forceStatic: false
+                    }),
+                    url: `https://discord.com/users/${client.user?.id}`
+                }).setDescription(`
 ${bot.description}
 
 📈 **Version**: ${bot.version}
 🟢 **Online Since**: <t:${(Date.now() - client?.uptime).toString().slice(0, -3)}:f>
 🤖 **Shard ID**: #${client.shard.ids[0]}
 📊 **Guild Count**: ${guildCount} (this shard: ${client.guilds.cache.size})
-                `)
+                `);
 
-            const buttons: any = new Discord.ActionRowBuilder()
-                .addComponents (
-                    new Discord.ButtonBuilder()
-                        .setStyle(Discord.ButtonStyle.Link)
-                        .setEmoji("🔗")
-                        .setLabel("Invite")
-                        .setURL("https://wdh.gg/reminders"),
+            const buttons: any = new Discord.ActionRowBuilder().addComponents(
+                new Discord.ButtonBuilder()
+                    .setStyle(Discord.ButtonStyle.Link)
+                    .setEmoji("🔗")
+                    .setLabel("Invite")
+                    .setURL("https://wdh.gg/reminders"),
 
-                    new Discord.ButtonBuilder()
-                        .setStyle(Discord.ButtonStyle.Link)
-                        .setEmoji("🆘")
-                        .setLabel("Support")
-                        .setURL("https://wdh.gg/reminders/support"),
+                new Discord.ButtonBuilder()
+                    .setStyle(Discord.ButtonStyle.Link)
+                    .setEmoji("🆘")
+                    .setLabel("Support")
+                    .setURL("https://wdh.gg/reminders/support"),
 
-                    new Discord.ButtonBuilder()
-                        .setStyle(Discord.ButtonStyle.Link)
-                        .setEmoji("🗳️")
-                        .setLabel("Vote")
-                        .setURL("https://wdh.gg/reminders/vote"),
+                new Discord.ButtonBuilder()
+                    .setStyle(Discord.ButtonStyle.Link)
+                    .setEmoji("🗳️")
+                    .setLabel("Vote")
+                    .setURL("https://wdh.gg/reminders/vote"),
 
-                    new Discord.ButtonBuilder()
-                        .setStyle(Discord.ButtonStyle.Link)
-                        .setEmoji("🐙")
-                        .setLabel("GitHub")
-                        .setURL("https://wdh.gg/reminders/github")
-                )
+                new Discord.ButtonBuilder()
+                    .setStyle(Discord.ButtonStyle.Link)
+                    .setEmoji("🐙")
+                    .setLabel("GitHub")
+                    .setURL("https://wdh.gg/reminders/github")
+            );
 
-            await interaction.editReply({ embeds: [info], components: [buttons] });
-        } catch(err) {
+            await interaction.editReply({
+                embeds: [info],
+                components: [buttons]
+            });
+        } catch (err) {
             client.logCommandError(err, interaction, Discord);
         }
     }
-}
+};
 
 export = command;

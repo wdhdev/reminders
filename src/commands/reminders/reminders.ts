@@ -24,16 +24,20 @@ const command: Command = {
     enabled: true,
     deferReply: true,
     ephemeral: true,
-    async execute(interaction: ChatInputCommandInteraction, client: ExtendedClient, Discord: typeof import("discord.js")) {
+    async execute(
+        interaction: ChatInputCommandInteraction,
+        client: ExtendedClient,
+        Discord: typeof import("discord.js")
+    ) {
         try {
             const fullReasons = interaction.options.get("full_reasons")?.value || false;
 
             let reminders = await Reminder.find({ user: interaction.user.id });
 
-            if(!reminders.length) {
+            if (!reminders.length) {
                 const error = new Discord.EmbedBuilder()
                     .setColor(client.config.embeds.error as ColorResolvable)
-                    .setDescription(`${emoji.cross} You do not have any reminders set.`)
+                    .setDescription(`${emoji.cross} You do not have any reminders set.`);
 
                 await interaction.editReply({ embeds: [error] });
                 return;
@@ -45,13 +49,23 @@ const command: Command = {
             const list = new Discord.EmbedBuilder()
                 .setColor(client.config.embeds.default as ColorResolvable)
                 .setTitle("Your Reminders")
-                .setDescription(cap(reminders.map(r => `\`${r.reminder_id}\` (<t:${(Number(r.reminder_set) + r.delay).toString().slice(0, -3)}:R>):\n*${!fullReasons ? cap(r.reason, 100): r.reason}*`).join("\n"), 4000))
+                .setDescription(
+                    cap(
+                        reminders
+                            .map(
+                                (r) =>
+                                    `\`${r.reminder_id}\` (<t:${(Number(r.reminder_set) + r.delay).toString().slice(0, -3)}:R>):\n*${!fullReasons ? cap(r.reason, 100) : r.reason}*`
+                            )
+                            .join("\n"),
+                        4000
+                    )
+                );
 
             await interaction.editReply({ embeds: [list] });
-        } catch(err) {
+        } catch (err) {
             client.logCommandError(err, interaction, Discord);
         }
     }
-}
+};
 
 export = command;
