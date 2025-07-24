@@ -17,13 +17,13 @@
     "url": "https://github.com/wdhdev/reminders/issues"
   },
   "dependencies": {
-    "@sentry/node": "9.38.0",
+    "@sentry/node": "9.40.0",
     "discord.js": "14.21.0",
     "dotenv": "17.2.0",
-    "mongoose": "8.16.3"
+    "mongoose": "8.16.4"
   },
   "devDependencies": {
-    "@types/node": "24.0.13",
+    "@types/node": "24.1.0",
     "typescript": "5.8.3"
   }
 }
