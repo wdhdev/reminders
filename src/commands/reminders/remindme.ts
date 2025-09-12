@@ -5,6 +5,7 @@ import { ChatInputCommandInteraction, ColorResolvable, TextChannel } from "disco
 import { emojis as emoji } from "../../../config.json";
 
 import Reminder from "../../models/Reminder";
+import setReminder from "../../util/setReminder";
 
 const command: Command = {
     name: "remindme",
@@ -55,8 +56,8 @@ const command: Command = {
         try {
             let time: number | string = interaction.options.get("time")?.value as string;
             const reason = interaction.options.get("reason")?.value as string;
-            const sendInChannel = interaction.options.get("send_in_channel")?.value || (false as boolean);
-            const recurring = interaction.options.get("recurring")?.value || (false as boolean);
+            const sendInChannel = interaction.options?.getBoolean("send_in_channel");
+            const recurring = interaction.options?.getBoolean("recurring");
 
             const reminders = await Reminder.find({
                 user: interaction.user.id
@@ -66,7 +67,9 @@ const command: Command = {
                 const error = new Discord.EmbedBuilder()
                     .setColor(client.config.embeds.error as ColorResolvable)
                     .setDescription(
-                        `${emoji.cross} You can only have up to ${client.config.reminders.max} active reminder${client.config.reminders.max === 1 ? "" : "s"} at once!`
+                        `${emoji.cross} You can only have up to ${client.config.reminders.max} active reminder${
+                            client.config.reminders.max === 1 ? "" : "s"
+                        } at once!`
                     );
 
                 await interaction.editReply({ embeds: [error] });
@@ -110,7 +113,9 @@ const command: Command = {
                 const error = new Discord.EmbedBuilder()
                     .setColor(client.config.embeds.error as ColorResolvable)
                     .setDescription(
-                        `${emoji.cross} Your reminder cannot be more than ${maxReminderTimeDays} day${maxReminderTimeDays === 1 ? "" : "s"} in the future.`
+                        `${emoji.cross} Your reminder cannot be more than ${maxReminderTimeDays} day${
+                            maxReminderTimeDays === 1 ? "" : "s"
+                        } in the future.`
                     );
 
                 await interaction.editReply({ embeds: [error] });
@@ -132,7 +137,7 @@ const command: Command = {
                 delay: time,
                 reason: reason,
                 send_in_channel: sendInChannel,
-                recurring
+                recurring: recurring
             }).save();
 
             if (time < client.config.reminders.timeTillSet) {
@@ -143,6 +148,7 @@ const command: Command = {
 
                         if (reminder?.recurring) {
                             reminder.reminder_set = Date.now().toString();
+                            await setReminder(reminder, client);
                             await reminder.save();
                         } else {
                             await reminder.deleteOne();
@@ -155,7 +161,9 @@ const command: Command = {
                             .addFields(
                                 {
                                     name: "Set",
-                                    value: `<t:${reminder.reminder_set.toString().slice(0, -3)}:f> (<t:${reminder.reminder_set.toString().slice(0, -3)}:R>)`
+                                    value: `<t:${reminder.reminder_set
+                                        .toString()
+                                        .slice(0, -3)}:f> (<t:${reminder.reminder_set.toString().slice(0, -3)}:R>)`
                                 },
                                 {
                                     name: "Recurring",
@@ -205,7 +213,11 @@ const command: Command = {
             const reminderSet = new Discord.EmbedBuilder()
                 .setColor(client.config.embeds.default as ColorResolvable)
                 .setDescription(
-                    `${emoji.tick} Your reminder has been set for <t:${(Number(reminder.reminder_set) + reminder.delay).toString().slice(0, -3)}:f> with ID \`${reminder.reminder_id}\`${reminder?.recurring ? " and will recur until cancelled." : "."}`
+                    `${emoji.tick} Your reminder has been set for <t:${(Number(reminder.reminder_set) + reminder.delay)
+                        .toString()
+                        .slice(0, -3)}:f> with ID \`${reminder.reminder_id}\`${
+                        reminder?.recurring ? " and will recur until cancelled." : "."
+                    }`
                 );
 
             await interaction.editReply({ embeds: [reminderSet] });
